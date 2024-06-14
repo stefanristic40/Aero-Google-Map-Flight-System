@@ -23,11 +23,16 @@ export default function useAero() {
 
   async function searchFlights(lat1, lon1, lat2, lon2) {
     const response = await axios.get(
-      `${base_url}/flights/search?query=-latlong "${lat1} ${lon1} ${lat2} ${lon2}"&max_pages=100`
+      `https://aeroapi.flightaware.com/aeroapi/flights/search?query=-latlong+%2244.953469+-111.045360+40.962321+-104.046577%22&max_pages=100`,
+      {
+        headers: {
+          Accept: "application/json; charset=UTF-8",
+          "x-apikey": process.env.REACT_APP_AERO_API_KEY,
+        },
+      }
     );
-    const data = await response.json();
-    console.log("data", data);
-    return data;
+    console.log("data", response.data);
+    return response.data;
   }
 
   return { getAeroData, searchFiightPositions, searchFlights };
