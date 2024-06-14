@@ -1,10 +1,8 @@
 import { create } from "zustand";
 
 const useMapStore = create((set) => ({
-  isShowPointNumbers: false,
-  isShowLines: false,
-  setIsShowPointNumbers: (isShowPointNumbers) => set({ isShowPointNumbers }),
-  setIsShowLines: (isShowLines) => set({ isShowLines }),
+  flights: [],
+  setFlights: (flights) => set({ flights }),
 }));
 
 export default useMapStore;

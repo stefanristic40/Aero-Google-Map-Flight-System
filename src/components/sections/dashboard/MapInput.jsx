@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Textarea, Checkbox, Field, Label, Button } from "@headlessui/react";
-import axios from "axios";
 import useAero from "../../../hooks/useAero";
-// import useMapStore from "../../../hooks/useMapStore";
+import useMapStore from "../../../hooks/useMapStore";
 
 function MapInput() {
   const [isShowPointNumbers, setIsShowPointNumbers] = useState(false);
   const [isShowLines, setIsShowLines] = useState(false);
 
   const { searchFlights } = useAero();
-  //   const setIsShowPointNumbersStore = useMapStore(
-  //     (state) => state.setIsShowPointNumbers
-  //   );
-  //   const setIsShowLinesStore = useMapStore((state) => state.setIsShowLines);
+  const setFlights = useMapStore((state) => state.setFlights);
 
   const handleSearchFlights = async () => {
-    searchFlights(40.7128, -74.006, 44.7128, -74.006);
+    const flights = await searchFlights(40.7128, -74.006, 44.7128, -74.006);
+    console.log("flights", flights);
+    setFlights(flights);
   };
 
   return (
