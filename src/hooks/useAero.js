@@ -1,10 +1,12 @@
 import axios from "axios";
 
 export default function useAero() {
-  async function searchFlights(lat1, lon1, lat2, lon2) {
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+  async function searchFlights({ lat1, lon1, lat2, lon2 }) {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:5000/api/v1/aero/flights/search?lat1=${lat1}&lon1=${lon1}&lat2=${lat2}&lon2=${lon2}`
+        `${BACKEND_URL}/api/v1/aero/flights/search?lat1=${lat1}&lon1=${lon1}&lat2=${lat2}&lon2=${lon2}`
       );
       return response.data.flights;
     } catch (error) {
@@ -13,5 +15,17 @@ export default function useAero() {
     }
   }
 
-  return { searchFlights };
+  async function getFlightTrack(flightId) {
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/api/v1/aero/flights/${flightId}/track`
+      );
+      return response.data.positions;
+    } catch (error) {
+      console.error("Error searching flights", error);
+      return [];
+    }
+  }
+
+  return { searchFlights, getFlightTrack };
 }
