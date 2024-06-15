@@ -15,6 +15,18 @@ export default function useAero() {
     }
   }
 
+  async function searchFlightsPositions({ lat1, lon1, lat2, lon2 }) {
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/api/v1/aero/flights/search/positions?lat1=${lat1}&lon1=${lon1}&lat2=${lat2}&lon2=${lon2}`
+      );
+      return response.data.flights;
+    } catch (error) {
+      console.error("Error searching flights", error);
+      return [];
+    }
+  }
+
   async function getFlightTrack(flightId) {
     try {
       const response = await axios.get(
@@ -27,5 +39,5 @@ export default function useAero() {
     }
   }
 
-  return { searchFlights, getFlightTrack };
+  return { searchFlights, getFlightTrack, searchFlightsPositions };
 }

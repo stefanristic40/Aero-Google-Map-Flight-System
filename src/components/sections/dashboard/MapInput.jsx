@@ -11,7 +11,7 @@ function MapInput() {
   const [lat2, setLat2] = useState(28.105578910933378);
   const [lon2, setLon2] = useState(-82.47799101938415);
 
-  const { searchFlights } = useAero();
+  const { searchFlightsPositions } = useAero();
   const setFlights = useMapStore((state) => state.setFlights);
   const setPositions = useMapStore((state) => state.setPositions);
 
@@ -23,7 +23,7 @@ function MapInput() {
       lon2,
     });
 
-    const flights = await searchFlights({
+    const flights = await searchFlightsPositions({
       lat1,
       lon1,
       lat2,
