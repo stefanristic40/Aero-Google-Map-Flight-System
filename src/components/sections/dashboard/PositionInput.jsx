@@ -14,8 +14,9 @@ function PositionInput({ label, value, setValue }) {
           "block w-full rounded-lg border py-1.5 px-3 text-sm/6 text-black",
           "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
         )}
+        type="number"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => setValue(Number(e.target.value))}
       />
     </Field>
   );
