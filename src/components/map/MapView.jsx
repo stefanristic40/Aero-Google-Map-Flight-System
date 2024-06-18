@@ -172,9 +172,9 @@ function MapView() {
                   <Polyline
                     path={positionsToPolyline(flight.positions)}
                     options={{
-                      strokeColor: "#F33A3A",
-                      strokeWeight: 2,
-                      strokeOpacity: 0.8,
+                      strokeColor: "#FF0505",
+                      strokeWeight: 1,
+                      strokeOpacity: 1,
                     }}
                     onClick={() => {
                       handleSelectFlight(flight);

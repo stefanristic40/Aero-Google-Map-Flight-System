@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Field, Button } from "@headlessui/react";
 import useMapStore from "../../../hooks/useMapStore";
 import PositionInput from "./PositionInput";
+import CountUp from "react-countup";
 
 function MapInput() {
   const [lat1, setLat1] = useState(28.37);
@@ -14,6 +15,13 @@ function MapInput() {
   const flights = useMapStore((state) => state.flights);
   const setFlights = useMapStore((state) => state.setFlights);
   const setPositions = useMapStore((state) => state.setPositions);
+
+  const [oldFlightsCount, setOldFlightsCount] = useState(0);
+  const [newFlightsCount, setNewFlightsCount] = useState(0);
+  useEffect(() => {
+    setOldFlightsCount(newFlightsCount);
+    setNewFlightsCount(flights.length);
+  }, [flights]);
 
   const handleSearchFlights = async () => {
     setPositions({
@@ -98,7 +106,11 @@ function MapInput() {
         >
           {isFetching ? "Fetching Flights..." : "Show Flights"}
         </Button>
-        {isFetching && <p>Found {flights.length} flights in the area.</p>}
+        <p>
+          Found{" "}
+          <CountUp end={flights.length} start={oldFlightsCount} duration={3} />{" "}
+          flights in the area.
+        </p>
       </div>
     </div>
   );

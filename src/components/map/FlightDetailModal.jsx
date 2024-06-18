@@ -1,6 +1,6 @@
 import React from "react";
 
-import { AirplaneTakeoff, Speedometer } from "@phosphor-icons/react";
+import { AirplaneTakeoff, Gps, Speedometer } from "@phosphor-icons/react";
 
 function FlightDetailModal({ isOpen, setIsOpen, flight }) {
   if (!isOpen) return null;
@@ -43,10 +43,37 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
         </div>
         <div>
           {/* Start Time and Groundspeed */}
-          <div className="flex flex-col py-2 px-4">
+          <div className="flex flex-col py-2 px-4 gap-2">
             <div className="w-full flex justify-between items-center gap-10">
               <div className="flex items-center gap-2">
-                <Speedometer size={32} />
+                <Gps size={24} />
+                <p className="font-medium ">Latitude</p>
+              </div>
+              <p className="font-medium text-nowrap ">
+                {flight?.last_position.latitude}
+              </p>
+            </div>
+            <div className="w-full flex justify-between items-center gap-10">
+              <div className="flex items-center gap-2">
+                <Gps size={24} />
+                <p className="font-medium ">Longitude</p>
+              </div>
+              <p className="font-medium text-nowrap ">
+                {flight?.last_position.longitude}
+              </p>
+            </div>
+            <div className="w-full flex justify-between items-center gap-10">
+              <div className="flex items-center gap-2">
+                <Gps size={24} />
+                <p className="font-medium ">Altitude</p>
+              </div>
+              <p className="font-medium text-nowrap ">
+                {flight?.last_position.altitude}
+              </p>
+            </div>
+            <div className="w-full flex justify-between items-center gap-10">
+              <div className="flex items-center gap-2">
+                <Speedometer size={24} />
                 <p className="font-medium ">Groundspeed</p>
               </div>
               <p className="font-medium text-nowrap ">
