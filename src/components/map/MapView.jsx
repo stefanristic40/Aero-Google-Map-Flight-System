@@ -37,12 +37,12 @@ function MapView() {
   const [selectedFlight, setSelectedFlight] = useState(null);
   const mapRef = React.useRef(null);
   const handleSelectFlight = async (flight) => {
-    const positions = await getFlightTrack(flight.fa_flight_id);
-    const temp = {
-      ...flight,
-      positions,
-    };
-    setSelectedFlight(temp);
+    // const positions = await getFlightTrack(flight.fa_flight_id);
+    // const temp = {
+    //   ...flight,
+    //   positions,
+    // };
+    setSelectedFlight(flight);
 
     setIsFlightDetailModalOpen(true);
   };
@@ -50,10 +50,13 @@ function MapView() {
   const [isFlightDetailModalOpen, setIsFlightDetailModalOpen] = useState(false);
 
   function positionsToPolyline(positions) {
-    return positions.map((position) => ({
-      lat: position.latitude,
-      lng: position.longitude,
-    }));
+    return (
+      positions &&
+      positions.map((position) => ({
+        lat: position.latitude,
+        lng: position.longitude,
+      }))
+    );
   }
 
   const [center, setCenter] = useState({ lat: 28.125, lng: -82.5 });
@@ -61,7 +64,6 @@ function MapView() {
 
   useEffect(() => {
     if (positions.lat1 && positions.lon1 && positions.lat2 && positions.lon2) {
-      console.log("positions", positions);
       setCenter({
         lat: (Number(positions.lat1) + Number(positions.lat2)) / 2,
         lng: (Number(positions.lon1) + Number(positions.lon2)) / 2,
@@ -77,9 +79,7 @@ function MapView() {
         // how to get the width of ref element
         let width = mapRef.current.clientWidth;
         let height = mapRef.current.clientHeight;
-        console.log(width, height);
         const zoomLevel = calculateZoomLevel(distance, Math.min(width, height));
-        console.log("zoomLevel", zoomLevel);
         setZoom(zoomLevel);
       }
     }
@@ -106,6 +106,12 @@ function MapView() {
     );
     return zoomLevel;
   }
+
+  useEffect(() => {
+    if (!isFlightDetailModalOpen) {
+      setSelectedFlight(null);
+    }
+  }, [isFlightDetailModalOpen]);
 
   return (
     // Important! Always set the container height explicitly
@@ -134,13 +140,20 @@ function MapView() {
               }}
             />
 
-            {flights.map((flight, index) => {
+            {flights?.map((flight, index) => {
+              if (
+                selectedFlight &&
+                flight?.fa_flight_id !== selectedFlight?.fa_flight_id
+              ) {
+                return null;
+              }
+
               return (
                 <div key={index}>
                   <OverlayView
                     position={{
-                      lat: flight.last_position.latitude,
-                      lng: flight.last_position.longitude,
+                      lat: flight?.last_position.latitude,
+                      lng: flight?.last_position.longitude,
                     }}
                     mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                   >
@@ -156,20 +169,20 @@ function MapView() {
                       weight="fill"
                     />
                   </OverlayView>
+                  <Polyline
+                    path={positionsToPolyline(flight.positions)}
+                    options={{
+                      strokeColor: "#F33A3A",
+                      strokeWeight: 2,
+                      strokeOpacity: 0.8,
+                    }}
+                    onClick={() => {
+                      handleSelectFlight(flight);
+                    }}
+                  />
                 </div>
               );
             })}
-
-            {selectedFlight && selectedFlight?.positions && (
-              <Polyline
-                path={positionsToPolyline(selectedFlight.positions)}
-                options={{
-                  strokeColor: "#F33A3A",
-                  strokeWeight: 2,
-                  strokeOpacity: 0.8,
-                }}
-              />
-            )}
           </GoogleMap>
         )}
       </div>
