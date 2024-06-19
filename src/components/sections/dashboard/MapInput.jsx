@@ -2,26 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Field, Button } from "@headlessui/react";
 import useMapStore from "../../../hooks/useMapStore";
 import PositionInput from "./PositionInput";
-import CountUp from "react-countup";
 
-function MapInput() {
-  const [lat1, setLat1] = useState(28.37);
-  const [lon1, setLon1] = useState(-82.41);
-  const [lat2, setLat2] = useState(28.38);
-  const [lon2, setLon2] = useState(-82.42);
+function MapInput({ setOpenList }) {
+  const [lat1, setLat1] = useState(28);
+  const [lon1, setLon1] = useState(47.1);
+  const [lat2, setLat2] = useState(28.1);
+  const [lon2, setLon2] = useState(47.2);
 
   const [isFetching, setIsFetching] = useState(false);
   const [flightsData, setFlightsData] = useState("");
   const flights = useMapStore((state) => state.flights);
   const setFlights = useMapStore((state) => state.setFlights);
   const setPositions = useMapStore((state) => state.setPositions);
-
-  const [oldFlightsCount, setOldFlightsCount] = useState(0);
-  const [newFlightsCount, setNewFlightsCount] = useState(0);
-  useEffect(() => {
-    setOldFlightsCount(newFlightsCount);
-    setNewFlightsCount(flights.length);
-  }, [flights]);
 
   const handleSearchFlights = async () => {
     setPositions({
@@ -89,8 +81,7 @@ function MapInput() {
   }, [flightsData, setFlights]);
 
   return (
-    <div className="w-1/4 p-6">
-      <h1 className="text-center font-bold text-xl">MI Map Tools GeoPlotter</h1>
+    <div className="">
       <div className="mt-10">
         <p>Past/Enter Geo Points Details</p>
         <Field className={"grid grid-cols-1 gap-2 mt-4"}>
@@ -106,11 +97,6 @@ function MapInput() {
         >
           {isFetching ? "Fetching Flights..." : "Show Flights"}
         </Button>
-        <p>
-          Found{" "}
-          <CountUp end={flights.length} start={oldFlightsCount} duration={3} />{" "}
-          flights in the area.
-        </p>
       </div>
     </div>
   );
