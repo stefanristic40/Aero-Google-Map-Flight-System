@@ -126,8 +126,10 @@ function MapView() {
         {tabs.map((tab, index) => (
           <button
             key={index}
-            className={`bg-white py-2 px-4 shadow-lg rounded-md mx-2 ${
-              selectedTab === tab.value ? "bg-blue-500 text-white" : ""
+            className={` py-2 px-4 shadow-lg rounded-md mx-2 ${
+              selectedTab === tab.value
+                ? "bg-blue-500 text-white"
+                : "bg-white text-black"
             }`}
             onClick={() => setSelectedTab(tab.value)}
           >
