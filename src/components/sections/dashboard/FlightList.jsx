@@ -30,11 +30,11 @@ function FlightList() {
         {flights.map((flight, index) => (
           <div
             key={index}
-            className={`border-b-2 bg-gray-100 border-gray-200 px-2 py-2 flex justify-start items-center gap-4 cursor-pointer  transition-all ease-in-out
+            className={`border-b-2 border-gray-200 px-2 py-2 flex justify-start items-center gap-4 cursor-pointer  transition-all ease-in-out
               ${
                 selectedFlight?.ident === flight.ident
                   ? "bg-[#F8C023] text-white"
-                  : "text-black hover:bg-gray-200"
+                  : "bg-gray-100 text-black hover:bg-gray-200"
               }
             `}
             onClick={() => setSelectedFlight(flight)}
