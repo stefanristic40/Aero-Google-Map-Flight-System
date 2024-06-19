@@ -13,6 +13,12 @@ function MapView() {
   const flights = useMapStore((state) => state.flights);
   const positions = useMapStore((state) => state.positions);
 
+  const tabs = [
+    { name: "All Flights Map", value: "all" },
+    { name: "Single Flight Maps", value: "single" },
+  ];
+  const [selectedTab, setSelectedTab] = useState(tabs[0].value);
+
   const { isLoaded } = useJsApiLoader({
     libraries: ["places"],
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
@@ -50,7 +56,13 @@ function MapView() {
   const [zoom, setZoom] = useState(11);
 
   useEffect(() => {
-    if (positions.lat1 && positions.lon1 && positions.lat2 && positions.lon2) {
+    if (
+      selectedTab === "all" &&
+      positions.lat1 &&
+      positions.lon1 &&
+      positions.lat2 &&
+      positions.lon2
+    ) {
       setCenter({
         lat: (Number(positions.lat1) + Number(positions.lat2)) / 2,
         lng: (Number(positions.lon1) + Number(positions.lon2)) / 2,
@@ -70,7 +82,7 @@ function MapView() {
         setZoom(zoomLevel);
       }
     }
-  }, [positions, mapRef]);
+  }, [positions, mapRef, selectedTab]);
 
   function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3; // Earth's radius in meters
@@ -103,40 +115,132 @@ function MapView() {
 
   return (
     // Important! Always set the container height explicitly
-    <div className="w-full h-screen ">
-      <div style={{ height: "100vh", width: "100%" }} ref={mapRef}>
-        {!isLoaded ? (
-          <div>Loading...</div>
-        ) : (
-          <div className="flex flex-col w-full h-full ">
-            <div className="h-full">
-              <GoogleMap
-                mapContainerStyle={{ width: "100%", height: "100%" }}
-                zoom={zoom}
-                center={center}
-                options={{
-                  fullscreenControl: false,
-                  mapTypeControl: false,
-                }}
-              >
-                <Polyline
-                  path={[
-                    { lat: positions.lat1, lng: positions.lon1 },
-                    { lat: positions.lat1, lng: positions.lon2 },
-                    { lat: positions.lat2, lng: positions.lon2 },
-                    { lat: positions.lat2, lng: positions.lon1 },
-                    { lat: positions.lat1, lng: positions.lon1 },
-                  ]}
-                  options={{
-                    strokeColor: "#0E3AFD",
-                    strokeWeight: 2,
-                    strokeOpacity: 0.8,
-                  }}
-                />
+    <div className="w-full h-screen relative">
+      <div className="absolute top-5 left-5 z-10">
+        {/* <button className="bg-white py-2 px-4 shadow-lg rounded-md mx-2">
+          All Flights Map
+        </button>
+        <button className="bg-white py-2 px-4 shadow-lg rounded-md mx-2">
+          Single Flight Maps
+        </button> */}
+        {tabs.map((tab, index) => (
+          <button
+            key={index}
+            className={`bg-white py-2 px-4 shadow-lg rounded-md mx-2 ${
+              selectedTab === tab.value ? "bg-blue-500 text-white" : ""
+            }`}
+            onClick={() => setSelectedTab(tab.value)}
+          >
+            {tab.name}
+          </button>
+        ))}
+      </div>
 
-                {flights?.map((flight, index) => {
-                  return (
-                    <div key={index}>
+      {selectedTab === "all" && (
+        <>
+          <div style={{ height: "100vh", width: "100%" }} ref={mapRef}>
+            {!isLoaded ? (
+              <div>Loading...</div>
+            ) : (
+              <div className="flex flex-col w-full h-full ">
+                <div className="h-full">
+                  <GoogleMap
+                    mapContainerStyle={{ width: "100%", height: "100%" }}
+                    zoom={zoom}
+                    center={center}
+                    options={{
+                      fullscreenControl: false,
+                      mapTypeControl: false,
+                    }}
+                  >
+                    <Polyline
+                      path={[
+                        { lat: positions.lat1, lng: positions.lon1 },
+                        { lat: positions.lat1, lng: positions.lon2 },
+                        { lat: positions.lat2, lng: positions.lon2 },
+                        { lat: positions.lat2, lng: positions.lon1 },
+                        { lat: positions.lat1, lng: positions.lon1 },
+                      ]}
+                      options={{
+                        strokeColor: "#0E3AFD",
+                        strokeWeight: 2,
+                        strokeOpacity: 0.8,
+                      }}
+                    />
+
+                    {flights?.map((flight, index) => {
+                      return (
+                        <div key={index}>
+                          <OverlayView
+                            position={{
+                              lat: flight?.last_position.latitude,
+                              lng: flight?.last_position.longitude,
+                            }}
+                            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                          >
+                            <Airplane
+                              onClick={(event) => {
+                                event.stopPropagation(); // Stop event from propagating to the map
+                                handleSelectFlight(flight);
+                              }}
+                              style={{
+                                rotate: flight.last_position.heading + "deg",
+                              }}
+                              className="h-6 w-6 text-[#F8C023] cursor-pointer"
+                              weight="fill"
+                            />
+                          </OverlayView>
+                          <Polyline
+                            path={positionsToPolyline(flight.positions)}
+                            options={{
+                              strokeColor: "#FF0505",
+                              strokeWeight: 1,
+                              strokeOpacity: 1,
+                            }}
+                            onClick={() => {
+                              handleSelectFlight(flight);
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </GoogleMap>
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {selectedTab === "single" && (
+        <div className="h-screen w-full overflow-auto">
+          {flights && flights.length > 0 && (
+            <div className=" custom-scrollbar  border-layoutBorder overflow-auto ">
+              <div className="grid grid-cols-5 ">
+                {flights.map((flight, index) => (
+                  <div
+                    className={`w-full h-[300px] ${
+                      selectedFlight?.ident === flight.ident
+                        ? "border-2 border-[#F8C023]"
+                        : "border border-black/20"
+                    } `}
+                    key={index}
+                  >
+                    <GoogleMap
+                      mapContainerStyle={{ width: "100%", height: "100%" }}
+                      zoom={zoom}
+                      center={{
+                        lat: flight?.last_position.latitude,
+                        lng: flight?.last_position.longitude,
+                      }}
+                      options={{
+                        fullscreenControl: false,
+                        mapTypeControl: false,
+                        streetViewControl: false,
+                        zoomControl: false,
+                        mapTypeId: "satellite",
+                      }}
+                    >
                       <OverlayView
                         position={{
                           lat: flight?.last_position.latitude,
@@ -167,77 +271,14 @@ function MapView() {
                           handleSelectFlight(flight);
                         }}
                       />
-                    </div>
-                  );
-                })}
-              </GoogleMap>
-            </div>
-
-            {flights && flights.length > 0 && (
-              <div className="h-[300px] max-w-[calc(100vw-300px)] border-t-4 custom-scrollbar  border-layoutBorder overflow-auto ">
-                <div className="w-max h-full flex justify-between items-center ">
-                  {flights.map((flight, index) => (
-                    <div
-                      className={`w-[300px]   h-full ${
-                        selectedFlight?.ident === flight.ident
-                          ? "border-2 border-[#F8C023]"
-                          : "border border-black/20"
-                      } `}
-                      key={index}
-                    >
-                      <GoogleMap
-                        mapContainerStyle={{ width: "100%", height: "100%" }}
-                        zoom={zoom}
-                        center={{
-                          lat: flight?.last_position.latitude,
-                          lng: flight?.last_position.longitude,
-                        }}
-                        options={{
-                          fullscreenControl: false,
-                          mapTypeControl: false,
-                          streetViewControl: false,
-                          zoomControl: false,
-                        }}
-                      >
-                        <OverlayView
-                          position={{
-                            lat: flight?.last_position.latitude,
-                            lng: flight?.last_position.longitude,
-                          }}
-                          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                        >
-                          <Airplane
-                            onClick={(event) => {
-                              event.stopPropagation(); // Stop event from propagating to the map
-                              handleSelectFlight(flight);
-                            }}
-                            style={{
-                              rotate: flight.last_position.heading + "deg",
-                            }}
-                            className="h-6 w-6 text-[#F8C023] cursor-pointer"
-                            weight="fill"
-                          />
-                        </OverlayView>
-                        <Polyline
-                          path={positionsToPolyline(flight.positions)}
-                          options={{
-                            strokeColor: "#FF0505",
-                            strokeWeight: 1,
-                            strokeOpacity: 1,
-                          }}
-                          onClick={() => {
-                            handleSelectFlight(flight);
-                          }}
-                        />
-                      </GoogleMap>
-                    </div>
-                  ))}
-                </div>
+                    </GoogleMap>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {selectedFlight && (
         <FlightDetailModal
