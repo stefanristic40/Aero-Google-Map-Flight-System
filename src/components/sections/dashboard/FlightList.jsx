@@ -26,15 +26,15 @@ function FlightList() {
         <CountUp end={flights.length} start={oldFlightsCount} duration={3} />{" "}
         flights in the area.
       </p>
-      <div className="h-full max-h-[400px] overflow-auto ">
+      <div className="h-full max-h-[400px] overflow-auto custom-scrollbar ">
         {flights.map((flight, index) => (
           <div
             key={index}
-            className={`border-b-2 bg-gray-100 border-gray-200 px-2 py-2 flex justify-start items-center gap-4 cursor-pointer hover:bg-gray-200 transition-all duration-300 ease-in-out
+            className={`border-b-2 bg-gray-100 border-gray-200 px-2 py-2 flex justify-start items-center gap-4 cursor-pointer  transition-all ease-in-out
               ${
                 selectedFlight?.ident === flight.ident
                   ? "bg-[#F8C023] text-white"
-                  : "text-black"
+                  : "text-black hover:bg-gray-200"
               }
             `}
             onClick={() => setSelectedFlight(flight)}

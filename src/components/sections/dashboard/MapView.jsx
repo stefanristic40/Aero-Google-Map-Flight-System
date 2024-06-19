@@ -18,13 +18,21 @@ function MapView() {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
   });
 
-  const [selectedFlight, setSelectedFlight] = useState(null);
+  const setSelectedFlight = useMapStore((state) => state.setSelectedFlight);
+  const selectedFlight = useMapStore((state) => state.selectedFlight);
+
   const mapRef = React.useRef(null);
 
   const handleSelectFlight = async (flight) => {
     setSelectedFlight(flight);
     setIsFlightDetailModalOpen(true);
   };
+
+  useEffect(() => {
+    if (selectedFlight) {
+      setIsFlightDetailModalOpen(true);
+    }
+  }, [selectedFlight]);
 
   const [isFlightDetailModalOpen, setIsFlightDetailModalOpen] = useState(false);
 
@@ -79,9 +87,10 @@ function MapView() {
     const distance = R * c;
     return distance;
   }
+
   function calculateZoomLevel(distance, screenPixelDistance) {
     const zoomLevel = Math.log2(
-      (156543.03392 * screenPixelDistance) / distance
+      (156543.03392 * screenPixelDistance) / (distance * 1.4)
     );
     return zoomLevel;
   }
@@ -126,13 +135,6 @@ function MapView() {
                 />
 
                 {flights?.map((flight, index) => {
-                  if (
-                    selectedFlight &&
-                    flight?.fa_flight_id !== selectedFlight?.fa_flight_id
-                  ) {
-                    return null;
-                  }
-
                   return (
                     <div key={index}>
                       <OverlayView
@@ -172,11 +174,15 @@ function MapView() {
             </div>
 
             {flights && flights.length > 0 && (
-              <div className="h-[300px] max-w-[calc(100vw-300px)] border-t-4 border-layoutBorder overflow-auto ">
+              <div className="h-[300px] max-w-[calc(100vw-300px)] border-t-4 custom-scrollbar  border-layoutBorder overflow-auto ">
                 <div className="w-max h-full flex justify-between items-center ">
                   {flights.map((flight, index) => (
                     <div
-                      className="w-[300px] border border-black/20 h-full"
+                      className={`w-[300px]   h-full ${
+                        selectedFlight?.ident === flight.ident
+                          ? "border-2 border-[#F8C023]"
+                          : "border border-black/20"
+                      } `}
                       key={index}
                     >
                       <GoogleMap
@@ -189,8 +195,8 @@ function MapView() {
                         options={{
                           fullscreenControl: false,
                           mapTypeControl: false,
-                          scaleControl: false,
                           streetViewControl: false,
+                          zoomControl: false,
                         }}
                       >
                         <OverlayView
