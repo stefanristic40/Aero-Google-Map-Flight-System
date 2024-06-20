@@ -243,6 +243,20 @@ function MapView() {
                         mapTypeId: "satellite",
                       }}
                     >
+                      <Polyline
+                        path={[
+                          { lat: positions.lat1, lng: positions.lon1 },
+                          { lat: positions.lat1, lng: positions.lon2 },
+                          { lat: positions.lat2, lng: positions.lon2 },
+                          { lat: positions.lat2, lng: positions.lon1 },
+                          { lat: positions.lat1, lng: positions.lon1 },
+                        ]}
+                        options={{
+                          strokeColor: "#0E3AFD",
+                          strokeWeight: 2,
+                          strokeOpacity: 0.8,
+                        }}
+                      />
                       <OverlayView
                         position={{
                           lat: flight?.last_position.latitude,

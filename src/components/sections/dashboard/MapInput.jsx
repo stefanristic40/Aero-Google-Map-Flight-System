@@ -4,14 +4,13 @@ import useMapStore from "../../../hooks/useMapStore";
 import PositionInput from "./PositionInput";
 
 function MapInput({ setOpenList }) {
-  const [lat1, setLat1] = useState(28);
-  const [lon1, setLon1] = useState(47.1);
-  const [lat2, setLat2] = useState(28.1);
-  const [lon2, setLon2] = useState(47.2);
+  const [lat1, setLat1] = useState(28.17210970976778);
+  const [lon1, setLon1] = useState(-82.50865363659598);
+  const [lat2, setLat2] = useState(28.113446816195648);
+  const [lon2, setLon2] = useState(-82.44046183086733);
 
   const [isFetching, setIsFetching] = useState(false);
   const [flightsData, setFlightsData] = useState("");
-  const flights = useMapStore((state) => state.flights);
   const setFlights = useMapStore((state) => state.setFlights);
   const setPositions = useMapStore((state) => state.setPositions);
 
