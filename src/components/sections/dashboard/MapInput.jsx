@@ -3,7 +3,7 @@ import { Field, Button } from "@headlessui/react";
 import useMapStore from "../../../hooks/useMapStore";
 import PositionInput from "./PositionInput";
 
-function MapInput({ setOpenList }) {
+function MapInput() {
   const [lat1, setLat1] = useState(28.17210970976778);
   const [lon1, setLon1] = useState(-82.50865363659598);
   const [lat2, setLat2] = useState(28.113446816195648);
