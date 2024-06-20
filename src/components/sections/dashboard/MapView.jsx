@@ -153,6 +153,7 @@ function MapView() {
                     options={{
                       fullscreenControl: false,
                       mapTypeControl: false,
+                      mapTypeId: "satellite",
                     }}
                   >
                     <Polyline
