@@ -42,14 +42,23 @@ function MapView() {
 
   const [isFlightDetailModalOpen, setIsFlightDetailModalOpen] = useState(false);
 
-  function positionsToPolyline(positions) {
-    return (
-      positions &&
-      positions.map((position) => ({
-        lat: position.latitude,
-        lng: position.longitude,
-      }))
-    );
+  function positionsToPolyline(positions, last_position = null) {
+    let polyline = [];
+    if (positions) {
+      positions.forEach((position) => {
+        polyline.push({
+          lat: position.latitude,
+          lng: position.longitude,
+        });
+      });
+    }
+    if (last_position) {
+      polyline.push({
+        lat: last_position.latitude,
+        lng: last_position.longitude,
+      });
+    }
+    return polyline;
   }
 
   const [center, setCenter] = useState({ lat: 28.125, lng: -82.5 });
@@ -194,7 +203,10 @@ function MapView() {
                             />
                           </OverlayView>
                           <Polyline
-                            path={positionsToPolyline(flight.positions)}
+                            path={positionsToPolyline(
+                              flight.positions,
+                              flight.last_position
+                            )}
                             options={{
                               strokeColor: "#FF0505",
                               strokeWeight: 1,
@@ -278,7 +290,10 @@ function MapView() {
                         />
                       </OverlayView>
                       <Polyline
-                        path={positionsToPolyline(flight.positions)}
+                        path={positionsToPolyline(
+                          flight.positions,
+                          flight.last_position
+                        )}
                         options={{
                           strokeColor: "#FF0505",
                           strokeWeight: 1,
