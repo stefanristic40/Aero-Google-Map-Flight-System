@@ -6,7 +6,7 @@ export default function useAero() {
   async function searchFlights({ lat1, lon1, lat2, lon2 }) {
     try {
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/aero/flights/search?lat1=${lat1}&lon1=${lon1}&lat2=${lat2}&lon2=${lon2}`
+        `${BACKEND_URL}/v1/aero/flights/search?lat1=${lat1}&lon1=${lon1}&lat2=${lat2}&lon2=${lon2}`
       );
       return response.data.flights;
     } catch (error) {
@@ -18,7 +18,7 @@ export default function useAero() {
   async function searchFlightsPositions({ lat1, lon1, lat2, lon2 }) {
     try {
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/aero/flights/search/positions?lat1=${lat1}&lon1=${lon1}&lat2=${lat2}&lon2=${lon2}`
+        `${BACKEND_URL}/v1/aero/flights/search/positions?lat1=${lat1}&lon1=${lon1}&lat2=${lat2}&lon2=${lon2}`
       );
       return response.data.flights;
     } catch (error) {
@@ -30,7 +30,7 @@ export default function useAero() {
   async function getFlightTrack(flightId) {
     try {
       const response = await axios.get(
-        `${BACKEND_URL}/api/v1/aero/flights/${flightId}/track`
+        `${BACKEND_URL}/v1/aero/flights/${flightId}/track`
       );
       return response.data.positions;
     } catch (error) {
