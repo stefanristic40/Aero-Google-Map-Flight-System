@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Field, Button } from "@headlessui/react";
 import useMapStore from "../../../hooks/useMapStore";
 import PositionInput from "./PositionInput";
+import { toast } from "react-toastify";
 
 function MapInput() {
   const [lat1, setLat1] = useState(28.17210970976778);
@@ -59,6 +60,8 @@ function MapInput() {
       }
     } catch (error) {
       console.error("Error searching flights", error);
+      setIsFetching(false);
+      toast.warn("Found 0 flights");
     }
   };
 
