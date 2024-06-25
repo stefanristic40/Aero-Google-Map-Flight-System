@@ -1,17 +1,14 @@
 import React from "react";
 import MapInput from "./MapInput";
 import FlightList from "./FlightList";
+import MapViewToogleTabs from "./MapViewToogleTabs";
 
 function LeftBar() {
   return (
-    <div className="border-r-2 border-layoutBorder w-[400px] py-6 px-3 shadow-lg">
-      <div>
-        <h1 className="text-center font-bold text-2xl">Plane Map</h1>
-        <MapInput />
-      </div>
-      <div>
-        <FlightList />
-      </div>
+    <div className="absolute w-[350px] z-10 top-0 left-0 p-3 flex flex-col gap-4 ">
+      <MapViewToogleTabs />
+      <MapInput />
+      <FlightList />
     </div>
   );
 }

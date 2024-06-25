@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import useMapStore from "../../../hooks/useMapStore";
 import { Airplane } from "@phosphor-icons/react";
 import CountUp from "react-countup";
-import { formatDateHM } from "../../../utils";
 
 function FlightList() {
   const flights = useMapStore((state) => state.flights);
   const setSelectedFlight = useMapStore((state) => state.setSelectedFlight);
   const selectedFlight = useMapStore((state) => state.selectedFlight);
-  const searchStatus = useMapStore((state) => state.searchStatus);
 
   const [oldFlightsCount, setOldFlightsCount] = useState(0);
   const [newFlightsCount, setNewFlightsCount] = useState(0);
@@ -23,27 +21,23 @@ function FlightList() {
   }
 
   return (
-    <div className="mt-2 rounded-md h-full">
-      <p className="text-sm text-right ">
-        Scanning for flights: Time-span #{searchStatus.index} of 96
-        <br />
-        (from {formatDateHM(searchStatus.start_date)} to{" "}
-        {formatDateHM(searchStatus.end_date)})
-      </p>
-      <p className="text-sm mt-5 text-right">
-        Found{" "}
-        <CountUp end={flights.length} start={oldFlightsCount} duration={3} />{" "}
-        flights in the area.
-      </p>
-      <div className="h-full max-h-[400px] overflow-auto custom-scrollbar ">
+    <div className="w-full bg-custom1 rounded-lg overflow-hidden shadow-lg pb-2">
+      <div className="flex bg-custom2 text-white justify-between items-center p-3">
+        <p className="font-bold">Flights</p>
+        <p className="text-sm text-right">
+          Found{" "}
+          <CountUp end={flights.length} start={oldFlightsCount} duration={3} />
+        </p>
+      </div>
+      <div className="pl-3 pr-2 py-2 h-full max-h-[400px] overflow-auto custom-scrollbar flex flex-col gap-2 ">
         {flights.map((flight, index) => (
           <div
             key={index}
-            className={`border-b-2 border-gray-200 px-2 py-2 flex justify-start items-center gap-4 cursor-pointer  transition-all ease-in-out
+            className={`px-2 py-2 flex justify-start items-center gap-4 cursor-pointer transition-all ease-in-out
               ${
                 selectedFlight?.ident === flight.ident
-                  ? "bg-[#F8C023] text-white"
-                  : "bg-gray-100 text-black hover:bg-gray-200"
+                  ? "bg-custom3 text-custom4"
+                  : "bg-[#414141] text-white hover:bg-custom3"
               }
             `}
             onClick={() => setSelectedFlight(flight)}
@@ -51,8 +45,8 @@ function FlightList() {
             <Airplane
               className={`h-6 w-6  ${
                 selectedFlight?.ident === flight.ident
-                  ? "text-white"
-                  : "text-[#F8C023]"
+                  ? "text-custom4"
+                  : "text-white"
               } `}
             />
             <div>

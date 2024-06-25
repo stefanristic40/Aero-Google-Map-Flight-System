@@ -10,10 +10,12 @@ const useMapStore = create((set) => ({
     lon2: 0,
   },
   searchStatus: {},
+  mapMode: "all",
   setFlights: (flights) => set({ flights }),
   setPositions: (positions) => set({ positions }),
   setSelectedFlight: (selectedFlight) => set({ selectedFlight }),
   setSearchStatus: (searchStatus) => set({ searchStatus }),
+  setMapMode: (mapMode) => set({ mapMode }),
 }));
 
 export default useMapStore;

@@ -14,11 +14,7 @@ function MapView() {
   const flights = useMapStore((state) => state.flights);
   const positions = useMapStore((state) => state.positions);
 
-  const tabs = [
-    { name: "All Flights Map", value: "all" },
-    { name: "Single Flight Maps", value: "single" },
-  ];
-  const [selectedTab, setSelectedTab] = useState(tabs[0].value);
+  const mapMode = useMapStore((state) => state.mapMode);
 
   const { isLoaded } = useJsApiLoader({
     libraries: ["places"],
@@ -67,7 +63,7 @@ function MapView() {
 
   useEffect(() => {
     if (
-      selectedTab === "all" &&
+      mapMode === "all" &&
       positions.lat1 &&
       positions.lon1 &&
       positions.lat2 &&
@@ -92,7 +88,7 @@ function MapView() {
         setZoom(zoomLevel);
       }
     }
-  }, [positions, mapRef, selectedTab]);
+  }, [positions, mapRef, mapMode]);
 
   function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3; // Earth's radius in meters
@@ -126,23 +122,7 @@ function MapView() {
   return (
     // Important! Always set the container height explicitly
     <div className="w-full h-screen relative">
-      <div className="absolute top-5 left-5 z-10">
-        {tabs.map((tab, index) => (
-          <button
-            key={index}
-            className={` py-2 px-4 shadow-lg rounded-md mx-2 ${
-              selectedTab === tab.value
-                ? "bg-blue-500 text-white"
-                : "bg-white text-black"
-            }`}
-            onClick={() => setSelectedTab(tab.value)}
-          >
-            {tab.name}
-          </button>
-        ))}
-      </div>
-
-      {selectedTab === "all" && (
+      {mapMode === "all" && (
         <>
           <div style={{ height: "100vh", width: "100%" }} ref={mapRef}>
             {!isLoaded ? (
@@ -160,6 +140,9 @@ function MapView() {
                     options={{
                       fullscreenControl: false,
                       mapTypeControl: false,
+                      streetViewControl: false,
+                      zoomControl: false,
+
                       mapTypeId: "satellite",
                     }}
                   >
@@ -246,7 +229,7 @@ function MapView() {
         </>
       )}
 
-      {selectedTab === "single" && (
+      {mapMode === "single" && (
         <div className="h-screen w-full overflow-auto">
           {flights && flights.length > 0 && (
             <div className=" custom-scrollbar  border-layoutBorder overflow-auto ">

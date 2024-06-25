@@ -4,7 +4,7 @@ import LeftBar from "../components/sections/dashboard/LeftBar";
 
 function Dashboard() {
   return (
-    <div className="flex">
+    <div className="relative">
       <LeftBar />
       <MapView />
     </div>

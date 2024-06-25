@@ -3,6 +3,8 @@ import { Field, Button } from "@headlessui/react";
 import useMapStore from "../../../hooks/useMapStore";
 import PositionInput from "./PositionInput";
 import { toast } from "react-toastify";
+import { formatDateHM } from "../../../utils";
+import { MagnifyingGlass } from "@phosphor-icons/react";
 
 function MapInput() {
   const [lat1, setLat1] = useState(28.17210970976778);
@@ -15,6 +17,7 @@ function MapInput() {
   const setFlights = useMapStore((state) => state.setFlights);
   const setPositions = useMapStore((state) => state.setPositions);
   const setSearchStatus = useMapStore((state) => state.setSearchStatus);
+  const searchStatus = useMapStore((state) => state.searchStatus);
 
   const handleSearchFlights = async () => {
     setPositions({
@@ -25,6 +28,8 @@ function MapInput() {
     });
 
     setIsFetching(true);
+
+    setFlights([]);
 
     try {
       const response = await fetch(
@@ -86,20 +91,34 @@ function MapInput() {
   }, [flightsData, setFlights]);
 
   return (
-    <div className="">
-      <div className="mt-10">
-        <p>Past/Enter Geo Points Details</p>
-        <Field className={"grid grid-cols-1 gap-2 mt-4"}>
+    <div className="w-full bg-custom1 text-white rounded-lg overflow-hidden shadow-lg">
+      <div className="bg-custom2  p-3">
+        <p className="font-bold">Search Flights</p>
+      </div>
+      <div className="">
+        <Field className={"grid grid-cols-1 gap-2 py-2 px-3"}>
           <PositionInput label="Lat 1:" value={lat1} setValue={setLat1} />
           <PositionInput label="Lon 1:" value={lon1} setValue={setLon1} />
           <PositionInput label="Lat 2:" value={lat2} setValue={setLat2} />
           <PositionInput label="Lon 2:" value={lon2} setValue={setLon2} />
         </Field>
 
+        {isFetching && (
+          <div>
+            <p className="text-sm text-center">
+              Scanning for flights: Time-span #{searchStatus.index} of 96
+              <br />
+              (from {formatDateHM(searchStatus.start_date)} to{" "}
+              {formatDateHM(searchStatus.end_date)})
+            </p>
+          </div>
+        )}
+
         <Button
-          className="mt-5 rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700"
+          className="w-full rounded flex justify-center items-center gap-2 bg-sky-600 py-3 px-4 text-sm font-medium text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700"
           onClick={handleSearchFlights}
         >
+          <MagnifyingGlass className="h-4 w-4" weight="bold" />
           {isFetching ? "Fetching Flights..." : "Show Flights"}
         </Button>
       </div>
