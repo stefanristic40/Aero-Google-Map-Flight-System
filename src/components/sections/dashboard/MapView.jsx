@@ -5,6 +5,7 @@ import {
   OverlayView,
   Polyline,
   useJsApiLoader,
+  Rectangle,
 } from "@react-google-maps/api";
 import FlightDetailModal from "./FlightDetailModal";
 import Airplane from "../../common/icons/Airplane";
@@ -150,7 +151,10 @@ function MapView() {
               <div className="flex flex-col w-full h-full ">
                 <div className="h-full">
                   <GoogleMap
-                    mapContainerStyle={{ width: "100%", height: "100%" }}
+                    mapContainerStyle={{
+                      width: "100%",
+                      height: "100%",
+                    }}
                     zoom={zoom}
                     center={center}
                     options={{
@@ -159,21 +163,6 @@ function MapView() {
                       mapTypeId: "satellite",
                     }}
                   >
-                    <Polyline
-                      path={[
-                        { lat: positions.lat1, lng: positions.lon1 },
-                        { lat: positions.lat1, lng: positions.lon2 },
-                        { lat: positions.lat2, lng: positions.lon2 },
-                        { lat: positions.lat2, lng: positions.lon1 },
-                        { lat: positions.lat1, lng: positions.lon1 },
-                      ]}
-                      options={{
-                        strokeColor: "#04FD04",
-                        strokeWeight: 5,
-                        strokeOpacity: 1,
-                      }}
-                    />
-
                     {flights?.map((flight, index) => {
                       return (
                         <div key={index}>
@@ -191,6 +180,11 @@ function MapView() {
                               }}
                               style={{
                                 rotate: flight.last_position.heading + "deg",
+                                opacity: selectedFlight
+                                  ? selectedFlight.ident === flight.ident
+                                    ? 1
+                                    : 0.5
+                                  : 1,
                               }}
                               className="h-6 w-6 cursor-pointer"
                             />
@@ -201,9 +195,26 @@ function MapView() {
                               flight.last_position
                             )}
                             options={{
-                              strokeColor: "#00FFFF",
-                              strokeWeight: 2,
-                              strokeOpacity: 0.7,
+                              strokeColor:
+                                selectedFlight &&
+                                selectedFlight.ident === flight.ident
+                                  ? "red"
+                                  : "#00FFFF",
+                              strokeWeight:
+                                selectedFlight &&
+                                selectedFlight.ident === flight.ident
+                                  ? 3
+                                  : 1,
+                              strokeOpacity:
+                                selectedFlight &&
+                                selectedFlight.ident === flight.ident
+                                  ? 1
+                                  : 0.7,
+                              zIndex:
+                                selectedFlight &&
+                                selectedFlight.ident === flight.ident
+                                  ? 1000
+                                  : 1,
                             }}
                             onClick={() => {
                               handleSelectFlight(flight);
@@ -212,6 +223,21 @@ function MapView() {
                         </div>
                       );
                     })}
+
+                    <Polyline
+                      path={[
+                        { lat: positions.lat1, lng: positions.lon1 },
+                        { lat: positions.lat1, lng: positions.lon2 },
+                        { lat: positions.lat2, lng: positions.lon2 },
+                        { lat: positions.lat2, lng: positions.lon1 },
+                        { lat: positions.lat1, lng: positions.lon1 },
+                      ]}
+                      options={{
+                        strokeColor: "#04FD04",
+                        strokeWeight: 5,
+                        strokeOpacity: 1,
+                      }}
+                    />
                   </GoogleMap>
                 </div>
               </div>

@@ -73,8 +73,6 @@ function MapInput() {
       for (let i = 0; i < items.length; i++) {
         try {
           const flight = JSON.parse(items[i]);
-          console.log("flight.flightData", flight?.flightData);
-          console.log("flight.status", flight?.status);
           setSearchStatus(flight.status);
 
           if (flight?.flightData) {
