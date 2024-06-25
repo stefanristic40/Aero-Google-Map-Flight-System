@@ -9,9 +9,11 @@ const useMapStore = create((set) => ({
     lat2: 0,
     lon2: 0,
   },
+  searchStatus: {},
   setFlights: (flights) => set({ flights }),
   setPositions: (positions) => set({ positions }),
   setSelectedFlight: (selectedFlight) => set({ selectedFlight }),
+  setSearchStatus: (searchStatus) => set({ searchStatus }),
 }));
 
 export default useMapStore;

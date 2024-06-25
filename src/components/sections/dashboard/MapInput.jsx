@@ -14,6 +14,7 @@ function MapInput() {
   const [flightsData, setFlightsData] = useState("");
   const setFlights = useMapStore((state) => state.setFlights);
   const setPositions = useMapStore((state) => state.setPositions);
+  const setSearchStatus = useMapStore((state) => state.setSearchStatus);
 
   const handleSearchFlights = async () => {
     setPositions({
@@ -61,7 +62,6 @@ function MapInput() {
     } catch (error) {
       console.error("Error searching flights", error);
       setIsFetching(false);
-      toast.warn("Found 0 flights");
     }
   };
 
@@ -73,8 +73,13 @@ function MapInput() {
       for (let i = 0; i < items.length; i++) {
         try {
           const flight = JSON.parse(items[i]);
-          console.log("flight", flight);
-          data.push(flight);
+          console.log("flight.flightData", flight?.flightData);
+          console.log("flight.status", flight?.status);
+          setSearchStatus(flight.status);
+
+          if (flight?.flightData) {
+            data.push(flight.flightData);
+          }
         } catch (error) {}
       }
 

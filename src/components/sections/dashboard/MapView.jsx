@@ -6,8 +6,8 @@ import {
   Polyline,
   useJsApiLoader,
 } from "@react-google-maps/api";
-import { Airplane } from "@phosphor-icons/react";
 import FlightDetailModal from "./FlightDetailModal";
+import Airplane from "../../common/icons/Airplane";
 
 function MapView() {
   const flights = useMapStore((state) => state.flights);
@@ -126,12 +126,6 @@ function MapView() {
     // Important! Always set the container height explicitly
     <div className="w-full h-screen relative">
       <div className="absolute top-5 left-5 z-10">
-        {/* <button className="bg-white py-2 px-4 shadow-lg rounded-md mx-2">
-          All Flights Map
-        </button>
-        <button className="bg-white py-2 px-4 shadow-lg rounded-md mx-2">
-          Single Flight Maps
-        </button> */}
         {tabs.map((tab, index) => (
           <button
             key={index}
@@ -174,9 +168,9 @@ function MapView() {
                         { lat: positions.lat1, lng: positions.lon1 },
                       ]}
                       options={{
-                        strokeColor: "#0E3AFD",
-                        strokeWeight: 2,
-                        strokeOpacity: 0.8,
+                        strokeColor: "#04FD04",
+                        strokeWeight: 5,
+                        strokeOpacity: 1,
                       }}
                     />
 
@@ -198,8 +192,7 @@ function MapView() {
                               style={{
                                 rotate: flight.last_position.heading + "deg",
                               }}
-                              className="h-6 w-6 text-[#F8C023] cursor-pointer"
-                              weight="fill"
+                              className="h-6 w-6 cursor-pointer"
                             />
                           </OverlayView>
                           <Polyline
@@ -208,9 +201,9 @@ function MapView() {
                               flight.last_position
                             )}
                             options={{
-                              strokeColor: "#FF0505",
-                              strokeWeight: 1,
-                              strokeOpacity: 1,
+                              strokeColor: "#00FFFF",
+                              strokeWeight: 2,
+                              strokeOpacity: 0.7,
                             }}
                             onClick={() => {
                               handleSelectFlight(flight);
@@ -265,8 +258,8 @@ function MapView() {
                           { lat: positions.lat1, lng: positions.lon1 },
                         ]}
                         options={{
-                          strokeColor: "#0E3AFD",
-                          strokeWeight: 2,
+                          strokeColor: "#04FD04",
+                          strokeWeight: 5,
                           strokeOpacity: 0.8,
                         }}
                       />
@@ -285,8 +278,7 @@ function MapView() {
                           style={{
                             rotate: flight.last_position.heading + "deg",
                           }}
-                          className="h-6 w-6 text-[#F8C023] cursor-pointer"
-                          weight="fill"
+                          className="h-6 w-6 cursor-pointer"
                         />
                       </OverlayView>
                       <Polyline
@@ -295,8 +287,8 @@ function MapView() {
                           flight.last_position
                         )}
                         options={{
-                          strokeColor: "#FF0505",
-                          strokeWeight: 1,
+                          strokeColor: "#00FFFF",
+                          strokeWeight: 2,
                           strokeOpacity: 1,
                         }}
                         onClick={() => {

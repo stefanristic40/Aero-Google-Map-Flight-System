@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import useMapStore from "../../../hooks/useMapStore";
 import { Airplane } from "@phosphor-icons/react";
 import CountUp from "react-countup";
+import { formatDateHM } from "../../../utils";
 
 function FlightList() {
   const flights = useMapStore((state) => state.flights);
   const setSelectedFlight = useMapStore((state) => state.setSelectedFlight);
   const selectedFlight = useMapStore((state) => state.selectedFlight);
+  const searchStatus = useMapStore((state) => state.searchStatus);
 
   const [oldFlightsCount, setOldFlightsCount] = useState(0);
   const [newFlightsCount, setNewFlightsCount] = useState(0);
+
   useEffect(() => {
     setOldFlightsCount(newFlightsCount);
     setNewFlightsCount(flights.length);
@@ -20,8 +23,14 @@ function FlightList() {
   }
 
   return (
-    <div className="mt-5 rounded-md h-full">
-      <p>
+    <div className="mt-2 rounded-md h-full">
+      <p className="text-sm text-right ">
+        Scanning for flights: Time-span #{searchStatus.index} of 96
+        <br />
+        (from {formatDateHM(searchStatus.start_date)} to{" "}
+        {formatDateHM(searchStatus.end_date)})
+      </p>
+      <p className="text-sm mt-5 text-right">
         Found{" "}
         <CountUp end={flights.length} start={oldFlightsCount} duration={3} />{" "}
         flights in the area.
