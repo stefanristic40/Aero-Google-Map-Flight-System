@@ -1,8 +1,52 @@
 import React from "react";
 
 import { AirplaneTakeoff, Gps, Speedometer } from "@phosphor-icons/react";
+import useMapStore from "../../../hooks/useMapStore";
+import { findIntersectionPoints } from "../../../utils";
 
 function FlightDetailModal({ isOpen, setIsOpen, flight }) {
+  const positions = useMapStore((state) => state.positions);
+
+  const intersectionPoints = findIntersectionPoints(
+    positions,
+    flight.positions
+  );
+
+  const PointSection = ({
+    title,
+    latitude,
+    longitude,
+    altitude,
+    groundspeed,
+  }) => {
+    return (
+      <div className="">
+        <div className="flex justify-start items-center gap-1 bg-custom2 py-2 px-3 text-white">
+          <Gps size={20} />
+          <p>{title}</p>
+        </div>
+        <div className="grid grid-cols-1 text-white bg-custom3 px-3 py-1 text-sm">
+          <div className="flex justify-between gap-10">
+            <p>Latitude</p>
+            <p className="font-[500]">{latitude}</p>
+          </div>
+          <div className="flex justify-between gap-10">
+            <p>Longitude</p>
+            <p className="font-[500]">{longitude}</p>
+          </div>
+          <div className="flex justify-between gap-10">
+            <p>Altitude</p>
+            <p className="font-[500]">{altitude}</p>
+          </div>
+          <div className="flex justify-between gap-10">
+            <p>Groundspeed</p>
+            <p className="font-[500]">{groundspeed} mph</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -42,45 +86,27 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
           </div>
         </div>
         <div>
-          {/* Start Time and Groundspeed */}
-          <div className="flex flex-col py-2 px-4 gap-2">
-            <div className="w-full flex justify-between items-center gap-10">
-              <div className="flex items-center gap-2">
-                <Gps size={24} />
-                <p className="font-medium ">Latitude</p>
-              </div>
-              <p className="font-medium text-nowrap ">
-                {flight?.last_position.latitude}
-              </p>
-            </div>
-            <div className="w-full flex justify-between items-center gap-10">
-              <div className="flex items-center gap-2">
-                <Gps size={24} />
-                <p className="font-medium ">Longitude</p>
-              </div>
-              <p className="font-medium text-nowrap ">
-                {flight?.last_position.longitude}
-              </p>
-            </div>
-            <div className="w-full flex justify-between items-center gap-10">
-              <div className="flex items-center gap-2">
-                <Gps size={24} />
-                <p className="font-medium ">Altitude</p>
-              </div>
-              <p className="font-medium text-nowrap ">
-                {flight?.last_position.altitude}
-              </p>
-            </div>
-            <div className="w-full flex justify-between items-center gap-10">
-              <div className="flex items-center gap-2">
-                <Speedometer size={24} />
-                <p className="font-medium ">Groundspeed</p>
-              </div>
-              <p className="font-medium text-nowrap ">
-                {flight?.last_position.groundspeed} mph
-              </p>
-            </div>
-          </div>
+          <PointSection
+            title="Current"
+            latitude={flight.last_position.latitude}
+            longitude={flight.last_position.longitude}
+            altitude={flight.last_position.altitude}
+            groundspeed={flight.last_position.groundspeed}
+          />
+          <PointSection
+            title="Enterence Point"
+            latitude={intersectionPoints[0].intersection.latitude}
+            longitude={intersectionPoints[0].intersection.longitude}
+            altitude={intersectionPoints[0].intersection.altitude}
+            groundspeed={intersectionPoints[0].intersection.groundspeed}
+          />
+          <PointSection
+            title="Exit Point"
+            latitude={intersectionPoints[1].intersection.latitude}
+            longitude={intersectionPoints[1].intersection.longitude}
+            altitude={intersectionPoints[1].intersection.altitude}
+            groundspeed={intersectionPoints[1].intersection.groundspeed}
+          />
         </div>
       </div>
     </div>

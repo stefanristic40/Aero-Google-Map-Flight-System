@@ -1,7 +1,13 @@
 import React from "react";
-import { GoogleMap, OverlayView, Polyline } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  Marker,
+  OverlayView,
+  Polyline,
+} from "@react-google-maps/api";
 import useMapStore from "../../../hooks/useMapStore";
 import Airplane from "../../common/icons/Airplane";
+import { findIntersectionPoints } from "../../../utils";
 
 function SingleFlightMapView({ flight, zoom, center }) {
   const selectedFlight = useMapStore((state) => state.selectedFlight);
@@ -31,6 +37,11 @@ function SingleFlightMapView({ flight, zoom, center }) {
     setSelectedFlight(flight);
   };
 
+  const intersectionPoints = findIntersectionPoints(
+    positions,
+    flight.positions
+  );
+
   return (
     <div
       className={`w-full h-[300px] ${
@@ -54,6 +65,18 @@ function SingleFlightMapView({ flight, zoom, center }) {
           handleSelectFlight(flight);
         }}
       >
+        <Marker
+          position={{
+            lat: intersectionPoints[0].intersection.latitude,
+            lng: intersectionPoints[0].intersection.longitude,
+          }}
+        />
+        <Marker
+          position={{
+            lat: intersectionPoints[1].intersection.latitude,
+            lng: intersectionPoints[1].intersection.longitude,
+          }}
+        />
         <Polyline
           path={[
             { lat: positions.lat1, lng: positions.lon1 },

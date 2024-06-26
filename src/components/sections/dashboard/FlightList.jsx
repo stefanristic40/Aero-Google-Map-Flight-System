@@ -71,7 +71,6 @@ function FlightList() {
             </div>
           ))}
 
-          {/* SHow if ther eis no flihgts */}
           {flights.length === 0 && (
             <div className="text-center text-sm text-white w-full">
               No flights available
