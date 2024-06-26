@@ -121,7 +121,7 @@ function MapView() {
 
   return (
     // Important! Always set the container height explicitly
-    <div className="w-full h-screen relative">
+    <div className="w-full h-screen relative bg-custom1 ">
       {mapMode === "all" && (
         <>
           <div style={{ height: "100vh", width: "100%" }} ref={mapRef}>
@@ -253,6 +253,9 @@ function MapView() {
                         streetViewControl: false,
                         zoomControl: false,
                         mapTypeId: "satellite",
+                      }}
+                      onClick={() => {
+                        handleSelectFlight(flight);
                       }}
                     >
                       <Polyline

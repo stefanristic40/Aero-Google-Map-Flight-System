@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Field, Button } from "@headlessui/react";
 import useMapStore from "../../../hooks/useMapStore";
 import PositionInput from "./PositionInput";
-import { toast } from "react-toastify";
 import { formatDateHM } from "../../../utils";
 import { MagnifyingGlass } from "@phosphor-icons/react";
+import { CaretDown, CaretUp } from "@phosphor-icons/react";
 
 function MapInput() {
+  const [isShow, setIsShow] = useState(true);
+
   const [lat1, setLat1] = useState(28.17210970976778);
   const [lon1, setLon1] = useState(-82.50865363659598);
   const [lat2, setLat2] = useState(28.113446816195648);
@@ -92,10 +94,17 @@ function MapInput() {
 
   return (
     <div className="w-full bg-custom1 text-white rounded-lg overflow-hidden shadow-lg">
-      <div className="bg-custom2  p-3">
+      <div className="bg-custom2 p-3 flex justify-between items-center ">
         <p className="font-bold">Search Flights</p>
+        <button className="p-0 m-0" onClick={() => setIsShow(!isShow)}>
+          {isShow ? (
+            <CaretDown size={22} weight="thin" />
+          ) : (
+            <CaretUp size={22} weight="thin" />
+          )}
+        </button>
       </div>
-      <div className="">
+      <div className={` ${isShow ? "block" : "hidden"} `}>
         <Field className={"grid grid-cols-1 gap-2 py-2 px-3"}>
           <PositionInput label="Lat 1:" value={lat1} setValue={setLat1} />
           <PositionInput label="Lon 1:" value={lon1} setValue={setLon1} />
