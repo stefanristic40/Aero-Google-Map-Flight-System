@@ -94,7 +94,7 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
             groundspeed={flight.last_position.groundspeed}
           />
           <PointSection
-            title="Enterence Point"
+            title="Entrance Point"
             latitude={intersectionPoints[0].intersection.latitude}
             longitude={intersectionPoints[0].intersection.longitude}
             altitude={intersectionPoints[0].intersection.altitude}
