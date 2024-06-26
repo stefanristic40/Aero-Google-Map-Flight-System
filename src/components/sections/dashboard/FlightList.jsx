@@ -4,7 +4,7 @@ import { Airplane, CaretDown, CaretUp } from "@phosphor-icons/react";
 import CountUp from "react-countup";
 
 function FlightList() {
-  const [isShow, setIsShow] = useState(false);
+  const [isShow, setIsShow] = useState(true);
 
   const flights = useMapStore((state) => state.flights);
   const setSelectedFlight = useMapStore((state) => state.setSelectedFlight);
@@ -17,10 +17,6 @@ function FlightList() {
     setOldFlightsCount(newFlightsCount);
     setNewFlightsCount(flights.length);
   }, [flights]);
-
-  if (!flights || (flights && flights.length === 0)) {
-    return null;
-  }
 
   return (
     <div className="w-full bg-custom1 rounded-lg overflow-hidden shadow-lg">
@@ -74,6 +70,13 @@ function FlightList() {
               </div>
             </div>
           ))}
+
+          {/* SHow if ther eis no flihgts */}
+          {flights.length === 0 && (
+            <div className="text-center text-sm text-white w-full">
+              No flights available
+            </div>
+          )}
         </div>
       </div>
     </div>
