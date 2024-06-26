@@ -245,11 +245,8 @@ function MapView() {
                   >
                     <GoogleMap
                       mapContainerStyle={{ width: "100%", height: "100%" }}
-                      zoom={zoom}
-                      center={{
-                        lat: flight?.last_position.latitude,
-                        lng: flight?.last_position.longitude,
-                      }}
+                      zoom={zoom * 0.9}
+                      center={center}
                       options={{
                         fullscreenControl: false,
                         mapTypeControl: false,
