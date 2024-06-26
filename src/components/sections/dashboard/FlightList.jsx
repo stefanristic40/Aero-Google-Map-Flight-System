@@ -53,7 +53,7 @@ function FlightList() {
           {flights.map((flight, index) => (
             <div
               key={index}
-              className={`px-2 py-2 cursor-pointer transition-all ease-in-out
+              className={` flex justify-between items-center  px-2 py-2 cursor-pointer transition-all ease-in-out
               ${
                 selectedFlight?.ident === flight.ident
                   ? "bg-custom3 text-custom4"
@@ -71,38 +71,39 @@ function FlightList() {
                   } `}
                 />
                 <div className="w-full">
-                  <div className="flex justify-between  gap-2">
-                    <div className="flex justify-start items-end  gap-2">
-                      <p className="font-medium text-sm p-0 m-0">
-                        {flight?.ident}
-                      </p>
-                      <p className="text-xs p-0 m-0">{flight?.aircraft_type}</p>
-                    </div>
-                    <div className="flex justify-start items-end gap-1">
-                      <p className="text-xs p-0 m-0">{flight?.origin?.city}</p>
-                      <p className="text-xs p-0 m-0">
-                        <ArrowRight size={16} />
-                      </p>
-                      <p className="text-xs p-0 m-0">
-                        {flight?.destination?.city}
-                      </p>
-                    </div>
+                  <div className="flex justify-start items-end  gap-2">
+                    <p className="font-medium text-sm p-0 m-0">
+                      {flight?.ident}
+                    </p>
+                    <p className="text-xs text-nowrap p-0 m-0">
+                      {flight?.aircraft_type}
+                    </p>
                   </div>
-                  <div className="flex justify-between  gap-2">
-                    <p className="text-xs font-[400] text-nowrap ">
-                      Height:{" "}
-                      <span className="text-sm font-[500]">
-                        {flight?.last_position?.altitude}
-                      </span>
-                    </p>
-                    <p className="text-xs font-[400] text-nowrap ">
-                      Speed:{" "}
-                      <span className="text-sm font-[500]">
-                        {flight?.last_position?.groundspeed} mph
-                      </span>
-                    </p>
+                  <div className="r gap-1">
+                    <span className="text-sm text-nowrap p-0 m-0">
+                      {flight?.origin?.city}
+                    </span>{" "}
+                    -{" "}
+                    <span className="text-xs text-nowrap p-0 m-0">
+                      {flight?.destination?.city}
+                    </span>
                   </div>
                 </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-[400] text-nowrap text-right ">
+                  Speed:{" "}
+                  <span className="text-xs font-[600]">
+                    {flight?.last_position?.groundspeed} mph
+                  </span>
+                </p>
+                <p className="text-xs font-[400] text-nowrap text-right ">
+                  Height:{" "}
+                  <span className="text-xs font-[600]">
+                    {flight?.last_position?.altitude}
+                  </span>
+                </p>
               </div>
             </div>
           ))}
