@@ -5,10 +5,10 @@ import {
   OverlayView,
   Polyline,
   useJsApiLoader,
-  Rectangle,
 } from "@react-google-maps/api";
 import FlightDetailModal from "./FlightDetailModal";
 import Airplane from "../../common/icons/Airplane";
+import SingleFlightMaps from "./SingleFlightMaps";
 
 function MapView() {
   const flights = useMapStore((state) => state.flights);
@@ -229,89 +229,7 @@ function MapView() {
         </>
       )}
 
-      {mapMode === "single" && (
-        <div className="h-screen w-full overflow-auto">
-          {flights && flights.length > 0 && (
-            <div className=" custom-scrollbar  border-layoutBorder overflow-auto ">
-              <div className="grid grid-cols-5 ">
-                {flights.map((flight, index) => (
-                  <div
-                    className={`w-full h-[300px] ${
-                      selectedFlight?.ident === flight.ident
-                        ? "border-2 border-[#F8C023]"
-                        : "border border-black/20"
-                    } `}
-                    key={index}
-                  >
-                    <GoogleMap
-                      mapContainerStyle={{ width: "100%", height: "100%" }}
-                      zoom={zoom * 0.9}
-                      center={center}
-                      options={{
-                        fullscreenControl: false,
-                        mapTypeControl: false,
-                        streetViewControl: false,
-                        zoomControl: false,
-                        mapTypeId: "satellite",
-                      }}
-                      onClick={() => {
-                        handleSelectFlight(flight);
-                      }}
-                    >
-                      <Polyline
-                        path={[
-                          { lat: positions.lat1, lng: positions.lon1 },
-                          { lat: positions.lat1, lng: positions.lon2 },
-                          { lat: positions.lat2, lng: positions.lon2 },
-                          { lat: positions.lat2, lng: positions.lon1 },
-                          { lat: positions.lat1, lng: positions.lon1 },
-                        ]}
-                        options={{
-                          strokeColor: "#04FD04",
-                          strokeWeight: 5,
-                          strokeOpacity: 0.8,
-                        }}
-                      />
-                      <OverlayView
-                        position={{
-                          lat: flight?.last_position.latitude,
-                          lng: flight?.last_position.longitude,
-                        }}
-                        mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                      >
-                        <Airplane
-                          onClick={(event) => {
-                            event.stopPropagation(); // Stop event from propagating to the map
-                            handleSelectFlight(flight);
-                          }}
-                          style={{
-                            rotate: flight.last_position.heading + "deg",
-                          }}
-                          className="h-6 w-6 cursor-pointer"
-                        />
-                      </OverlayView>
-                      <Polyline
-                        path={positionsToPolyline(
-                          flight.positions,
-                          flight.last_position
-                        )}
-                        options={{
-                          strokeColor: "#00FFFF",
-                          strokeWeight: 2,
-                          strokeOpacity: 1,
-                        }}
-                        onClick={() => {
-                          handleSelectFlight(flight);
-                        }}
-                      />
-                    </GoogleMap>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      {mapMode === "single" && <SingleFlightMaps center={center} zoom={zoom} />}
 
       {selectedFlight && (
         <FlightDetailModal
