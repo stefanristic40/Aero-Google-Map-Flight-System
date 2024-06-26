@@ -44,12 +44,18 @@ function SingleFlightMapView({ flight, zoom, center }) {
 
   return (
     <div
-      className={`w-full h-[300px] ${
+      className={`relative w-full h-[300px] ${
         selectedFlight?.ident === flight.ident
           ? "border-2 border-[#F8C023]"
           : "border border-black/20"
       } `}
     >
+      <div className="absolute bottom-1 left-1 w-full flex justify-center rounded-lg text-white text-sm z-10">
+        <div className="bg-black/50 p-2">
+          <p>Altitude: {flight.last_position.altitude} ft</p>
+          <p>Speed: {flight.last_position.groundspeed} mph</p>
+        </div>
+      </div>
       <GoogleMap
         mapContainerStyle={{ width: "100%", height: "100%" }}
         zoom={zoom * 0.9}

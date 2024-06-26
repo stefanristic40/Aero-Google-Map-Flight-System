@@ -51,7 +51,7 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
 
   return (
     <div>
-      <div className="fixed top-6 right-6 w-[360px]  bg-white">
+      <div className="fixed top-6 right-6 w-[360px] z-20 shadow-lg border border-custom3  bg-white">
         <div className="bg-custom1 flex justify-between items-center py-2 px-4">
           <div>
             <p className="text-[#F8C023] font-medium text-lg">

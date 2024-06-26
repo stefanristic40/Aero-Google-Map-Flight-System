@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import useMapStore from "../../../hooks/useMapStore";
-import { Airplane, CaretDown, CaretUp } from "@phosphor-icons/react";
+import {
+  Airplane,
+  ArrowRight,
+  CaretDown,
+  CaretUp,
+} from "@phosphor-icons/react";
 import CountUp from "react-countup";
 
 function FlightList() {
@@ -48,7 +53,7 @@ function FlightList() {
           {flights.map((flight, index) => (
             <div
               key={index}
-              className={`px-2 py-2 flex justify-start items-center gap-4 cursor-pointer transition-all ease-in-out
+              className={`px-2 py-2 cursor-pointer transition-all ease-in-out
               ${
                 selectedFlight?.ident === flight.ident
                   ? "bg-custom3 text-custom4"
@@ -57,16 +62,47 @@ function FlightList() {
             `}
               onClick={() => setSelectedFlight(flight)}
             >
-              <Airplane
-                className={`h-6 w-6  ${
-                  selectedFlight?.ident === flight.ident
-                    ? "text-custom4"
-                    : "text-white"
-                } `}
-              />
-              <div>
-                <p className="font-medium text-sm ">{flight?.ident}</p>
-                <p className="text-xs">{flight?.aircraft_type}</p>
+              <div className="flex justify-start items-center w-full gap-4">
+                <Airplane
+                  className={`h-6 w-6 ml-2 ${
+                    selectedFlight?.ident === flight.ident
+                      ? "text-custom4"
+                      : "text-white"
+                  } `}
+                />
+                <div className="w-full">
+                  <div className="flex justify-between  gap-2">
+                    <div className="flex justify-start items-end  gap-2">
+                      <p className="font-medium text-sm p-0 m-0">
+                        {flight?.ident}
+                      </p>
+                      <p className="text-xs p-0 m-0">{flight?.aircraft_type}</p>
+                    </div>
+                    <div className="flex justify-start items-end gap-1">
+                      <p className="text-xs p-0 m-0">{flight?.origin?.city}</p>
+                      <p className="text-xs p-0 m-0">
+                        <ArrowRight size={16} />
+                      </p>
+                      <p className="text-xs p-0 m-0">
+                        {flight?.destination?.city}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex justify-between  gap-2">
+                    <p className="text-xs font-[400] text-nowrap ">
+                      Height:{" "}
+                      <span className="text-sm font-[500]">
+                        {flight?.last_position?.altitude}
+                      </span>
+                    </p>
+                    <p className="text-xs font-[400] text-nowrap ">
+                      Speed:{" "}
+                      <span className="text-sm font-[500]">
+                        {flight?.last_position?.groundspeed} mph
+                      </span>
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
