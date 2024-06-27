@@ -22,7 +22,7 @@ function MapInput() {
   const [lon2, setLon2] = useState(positions.lon2);
 
   const [isHeightFilter, setIsHeightFilter] = useState(false);
-  const [minHeight, setMinHeight] = useState(0);
+  const [maxHeight, setMaxHeight] = useState(0);
 
   const [isFetching, setIsFetching] = useState(false);
   const [flightsData, setFlightsData] = useState("");
@@ -57,7 +57,7 @@ function MapInput() {
     setFlights([]);
 
     try {
-      const heightQuery = isHeightFilter ? `&minHeight=${minHeight}` : "";
+      const heightQuery = isHeightFilter ? `&maxHeight=${maxHeight}` : "";
 
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/v1/aero/flights/search/positions?lat1=${lat1}&lon1=${lon1}&lat2=${lat2}&lon2=${lon2}${heightQuery}`,
@@ -218,8 +218,8 @@ function MapInput() {
               <div className="pl-3 flex flex-col gap-1 mt-2">
                 <PositionInput
                   label="Height:"
-                  value={minHeight}
-                  setValue={setMinHeight}
+                  value={maxHeight}
+                  setValue={setMaxHeight}
                 />
               </div>
             )}
