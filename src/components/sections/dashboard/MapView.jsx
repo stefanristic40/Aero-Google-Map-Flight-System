@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import useMapStore from "../../../hooks/useMapStore";
 import {
   GoogleMap,
+  Marker,
   OverlayView,
   Polyline,
   useJsApiLoader,
@@ -9,20 +10,27 @@ import {
 import FlightDetailModal from "./FlightDetailModal";
 import Airplane from "../../common/icons/Airplane";
 import SingleFlightMaps from "./SingleFlightMaps";
+import useDebounce from "../../../hooks/useDebounce";
+import { findIntersectionPoints } from "../../../utils";
 
 function MapView() {
-  const flights = useMapStore((state) => state.flights);
-  const positions = useMapStore((state) => state.positions);
-
-  const mapMode = useMapStore((state) => state.mapMode);
-
   const { isLoaded } = useJsApiLoader({
     libraries: ["places"],
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
   });
 
+  const flights = useMapStore((state) => state.flights);
+  const positions = useMapStore((state) => state.positions);
+  const setPositions = useMapStore((state) => state.setPositions);
+  const mapMode = useMapStore((state) => state.mapMode);
   const setSelectedFlight = useMapStore((state) => state.setSelectedFlight);
   const selectedFlight = useMapStore((state) => state.selectedFlight);
+  const isSelectingPoint = useMapStore((state) => state.isSelectingPoint);
+  const setSelectedPoint = useMapStore((state) => state.setSelectedPoint);
+
+  const [center, setCenter] = useState({ lat: 28.125, lng: -82.5 });
+  const [zoom, setZoom] = useState(11);
+  const [isFlightDetailModalOpen, setIsFlightDetailModalOpen] = useState(false);
 
   const mapRef = React.useRef(null);
 
@@ -36,8 +44,6 @@ function MapView() {
       setIsFlightDetailModalOpen(true);
     }
   }, [selectedFlight]);
-
-  const [isFlightDetailModalOpen, setIsFlightDetailModalOpen] = useState(false);
 
   function positionsToPolyline(positions, last_position = null) {
     let polyline = [];
@@ -58,11 +64,11 @@ function MapView() {
     return polyline;
   }
 
-  const [center, setCenter] = useState({ lat: 28.125, lng: -82.5 });
-  const [zoom, setZoom] = useState(11);
+  const debouncedPositionsTerm = useDebounce(positions, 500); // 500ms debounce delay
 
   useEffect(() => {
     if (
+      debouncedPositionsTerm &&
       mapMode === "all" &&
       positions.lat1 &&
       positions.lon1 &&
@@ -88,7 +94,7 @@ function MapView() {
         setZoom(zoomLevel);
       }
     }
-  }, [positions, mapRef, mapMode]);
+  }, [debouncedPositionsTerm]);
 
   function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3; // Earth's radius in meters
@@ -119,6 +125,17 @@ function MapView() {
     }
   }, [isFlightDetailModalOpen]);
 
+  const handleMapViewClick = (e) => {
+    if (mapMode === "all") {
+      if (isSelectingPoint) {
+        setSelectedPoint({
+          lat: e.latLng.lat(),
+          lon: e.latLng.lng(),
+        });
+      }
+    }
+  };
+
   return (
     // Important! Always set the container height explicitly
     <div className="w-full h-screen relative bg-custom1 ">
@@ -145,8 +162,60 @@ function MapView() {
 
                       mapTypeId: "satellite",
                     }}
+                    onClick={(e) => {
+                      handleMapViewClick(e);
+                    }}
                   >
+                    {positions.lat1 && positions.lon1 && (
+                      <Marker
+                        position={{
+                          lat: positions.lat1,
+                          lng: positions.lon1,
+                        }}
+                        icon={{
+                          url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                        }}
+                        draggable={true}
+                        onDrag={(e) => {
+                          console.log(e);
+                          setPositions({
+                            lat1: e.latLng.lat(),
+                            lon1: e.latLng.lng(),
+                            lat2: positions.lat2,
+                            lon2: positions.lon2,
+                          });
+                        }}
+                      />
+                    )}
+                    {positions.lat2 && positions.lon2 && (
+                      <Marker
+                        position={{
+                          lat: positions.lat2,
+                          lng: positions.lon2,
+                        }}
+                        icon={{
+                          url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                        }}
+                        draggable={true}
+                        onDrag={(e) => {
+                          setPositions({
+                            lat1: positions.lat1,
+                            lon1: positions.lon1,
+                            lat2: e.latLng.lat(),
+                            lon2: e.latLng.lng(),
+                          });
+                        }}
+                      />
+                    )}
+
                     {flights?.map((flight, index) => {
+                      const intersectionPoints = findIntersectionPoints(
+                        positions,
+                        flight.positions
+                      );
+
+                      console.log("intersectionPoints", intersectionPoints);
+
                       return (
                         <div key={index}>
                           <OverlayView
@@ -181,18 +250,22 @@ function MapView() {
                               strokeColor:
                                 selectedFlight &&
                                 selectedFlight.ident === flight.ident
-                                  ? "red"
+                                  ? "#0000FF"
+                                  : intersectionPoints[0].nearestPoint
+                                      .altitude_change === "D"
+                                  ? "#FF00CC"
                                   : "#00FFFF",
                               strokeWeight:
                                 selectedFlight &&
                                 selectedFlight.ident === flight.ident
                                   ? 3
                                   : 1,
-                              strokeOpacity:
-                                selectedFlight &&
-                                selectedFlight.ident === flight.ident
-                                  ? 1
-                                  : 0.7,
+                              strokeOpacity: !selectedFlight
+                                ? 1
+                                : selectedFlight &&
+                                  selectedFlight.ident === flight.ident
+                                ? 1
+                                : 0.7,
                               zIndex:
                                 selectedFlight &&
                                 selectedFlight.ident === flight.ident
@@ -217,7 +290,7 @@ function MapView() {
                       ]}
                       options={{
                         strokeColor: "#04FD04",
-                        strokeWeight: 5,
+                        strokeWeight: 4,
                         strokeOpacity: 1,
                       }}
                     />

@@ -118,7 +118,10 @@ function SingleFlightMapView({ flight, zoom, center }) {
         <Polyline
           path={positionsToPolyline(flight.positions, flight.last_position)}
           options={{
-            strokeColor: "#00FFFF",
+            strokeColor:
+              intersectionPoints[0].nearestPoint.altitude_change === "D"
+                ? "#FF00CC"
+                : "#00FFFF",
             strokeWeight: 2,
             strokeOpacity: 1,
           }}

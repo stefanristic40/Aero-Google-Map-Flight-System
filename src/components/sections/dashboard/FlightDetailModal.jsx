@@ -1,6 +1,6 @@
 import React from "react";
 
-import { AirplaneTakeoff, Gps, Speedometer } from "@phosphor-icons/react";
+import { AirplaneTakeoff, Gps } from "@phosphor-icons/react";
 import useMapStore from "../../../hooks/useMapStore";
 import { findIntersectionPoints } from "../../../utils";
 

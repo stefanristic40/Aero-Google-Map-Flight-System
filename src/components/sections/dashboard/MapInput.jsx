@@ -3,23 +3,43 @@ import { Field, Button } from "@headlessui/react";
 import useMapStore from "../../../hooks/useMapStore";
 import PositionInput from "./PositionInput";
 import { formatDateHM } from "../../../utils";
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { Gps, MagnifyingGlass } from "@phosphor-icons/react";
 import { CaretDown, CaretUp } from "@phosphor-icons/react";
+import PointSelector from "../../common/icons/PointSelector";
 
 function MapInput() {
-  const [isShow, setIsShow] = useState(true);
-
-  const [lat1, setLat1] = useState(28.17210970976778);
-  const [lon1, setLon1] = useState(-82.50865363659598);
-  const [lat2, setLat2] = useState(28.113446816195648);
-  const [lon2, setLon2] = useState(-82.44046183086733);
-
-  const [isFetching, setIsFetching] = useState(false);
-  const [flightsData, setFlightsData] = useState("");
   const setFlights = useMapStore((state) => state.setFlights);
+  const positions = useMapStore((state) => state.positions);
   const setPositions = useMapStore((state) => state.setPositions);
   const setSearchStatus = useMapStore((state) => state.setSearchStatus);
   const searchStatus = useMapStore((state) => state.searchStatus);
+
+  const [isShow, setIsShow] = useState(true);
+
+  const [lat1, setLat1] = useState(positions.lat1);
+  const [lon1, setLon1] = useState(positions.lon1);
+  const [lat2, setLat2] = useState(positions.lat2);
+  const [lon2, setLon2] = useState(positions.lon2);
+
+  const [isFetching, setIsFetching] = useState(false);
+  const [flightsData, setFlightsData] = useState("");
+
+  // useEffect(() => {
+  //   setPositions({
+  //     lat1,
+  //     lon1,
+  //     lat2,
+  //     lon2,
+  //   });
+  // }, [lat1, lon1, lat2, lon2, setPositions]);
+
+  useEffect(() => {
+    console.log("positions", positions);
+    setLat1(positions.lat1);
+    setLon1(positions.lon1);
+    setLat2(positions.lat2);
+    setLon2(positions.lon2);
+  }, [positions]);
 
   const handleSearchFlights = async () => {
     setPositions({
@@ -92,6 +112,24 @@ function MapInput() {
     }
   }, [flightsData, setFlights]);
 
+  const setPoint1 = (point1) => {
+    setPositions({
+      lat1: point1.lat,
+      lon1: point1.lon,
+      lat2,
+      lon2,
+    });
+  };
+
+  const setPoint2 = (point2) => {
+    setPositions({
+      lat1,
+      lon1,
+      lat2: point2.lat,
+      lon2: point2.lon,
+    });
+  };
+
   return (
     <div className="w-full bg-custom1 text-white rounded-lg overflow-hidden shadow-lg">
       <div className="bg-custom2 p-3 flex justify-between items-center ">
@@ -105,20 +143,54 @@ function MapInput() {
         </button>
       </div>
       <div className={` ${isShow ? "block" : "hidden"} `}>
-        <Field className={"grid grid-cols-1 gap-2 py-2 px-3"}>
-          <PositionInput label="Lat 1:" value={lat1} setValue={setLat1} />
-          <PositionInput label="Lon 1:" value={lon1} setValue={setLon1} />
-          <PositionInput label="Lat 2:" value={lat2} setValue={setLat2} />
-          <PositionInput label="Lon 2:" value={lon2} setValue={setLon2} />
+        <Field className={"py-3 px-3"}>
+          <div>
+            <div className="flex justify-between items-center">
+              <div className="flex justify-start items-center ">
+                <img
+                  src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                  alt="green-dot"
+                  className="h-6 w-6"
+                />
+                <p className="text font-[600]">Position 1</p>
+              </div>
+              <PointSelector setPoint={setPoint1} pointLabel="point1" />
+            </div>
+            <div className="pl-3 flex flex-col gap-1 mt-2">
+              <PositionInput label="Lat:" value={lat1} setValue={setLat1} />
+              <PositionInput label="Lon:" value={lon1} setValue={setLon1} />
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="flex justify-between items-center">
+              <div className="flex justify-start items-center ">
+                <img
+                  src="http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                  alt="green-dot"
+                  className="h-6 w-6"
+                />
+                <p className="text font-[600]">Position 2</p>
+              </div>
+              <PointSelector setPoint={setPoint2} pointLabel="point2" />
+            </div>
+            <div className="pl-3 flex flex-col gap-1 mt-2">
+              <PositionInput label="Lat:" value={lat2} setValue={setLat2} />
+              <PositionInput label="Lon:" value={lon2} setValue={setLon2} />
+            </div>
+          </div>
         </Field>
 
         {isFetching && (
           <div>
             <p className="text-sm text-center">
-              Scanning for flights: Time-span #{searchStatus.index} of 96
+              Scanning for flights: Time-span # {searchStatus.index || 1} of 96
               <br />
-              (from {formatDateHM(searchStatus.start_date)} to{" "}
-              {formatDateHM(searchStatus.end_date)})
+              {searchStatus.start_date && searchStatus.end_date && (
+                <p>
+                  (from {formatDateHM(searchStatus.start_date)} to{" "}
+                  {formatDateHM(searchStatus.end_date)})
+                </p>
+              )}
             </p>
           </div>
         )}
