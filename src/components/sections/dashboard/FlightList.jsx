@@ -48,7 +48,7 @@ function FlightList() {
       </div>
       <div className={` ${isShow ? "block pb-2 " : "hidden"}`}>
         <div
-          className={`pl-3 pr-2 py-2 h-full max-h-[400px] overflow-auto custom-scrollbar flex flex-col gap-2 `}
+          className={`pl-3 pr-2 py-2 h-full max-h-[330px] overflow-auto custom-scrollbar flex flex-col gap-2 `}
         >
           {flights.map((flight, index) => (
             <div

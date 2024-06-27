@@ -65,7 +65,7 @@ function SingleFlightMapView({ flight, zoom, center }) {
           mapTypeControl: false,
           streetViewControl: false,
           zoomControl: false,
-          mapTypeId: "satellite",
+          mapTypeId: "hybrid",
         }}
         onClick={() => {
           handleSelectFlight(flight);

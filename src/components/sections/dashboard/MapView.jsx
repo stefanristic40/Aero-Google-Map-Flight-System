@@ -159,8 +159,7 @@ function MapView() {
                       mapTypeControl: false,
                       streetViewControl: false,
                       zoomControl: false,
-
-                      mapTypeId: "satellite",
+                      mapTypeId: "hybrid",
                     }}
                     onClick={(e) => {
                       handleMapViewClick(e);

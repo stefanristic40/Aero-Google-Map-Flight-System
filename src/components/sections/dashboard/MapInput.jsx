@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Field, Button } from "@headlessui/react";
+import { Field, Button, Checkbox } from "@headlessui/react";
 import useMapStore from "../../../hooks/useMapStore";
 import PositionInput from "./PositionInput";
 import { formatDateHM } from "../../../utils";
-import { Gps, MagnifyingGlass } from "@phosphor-icons/react";
+import { AirplaneInFlight, Gps, MagnifyingGlass } from "@phosphor-icons/react";
 import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import PointSelector from "../../common/icons/PointSelector";
 
@@ -20,6 +20,9 @@ function MapInput() {
   const [lon1, setLon1] = useState(positions.lon1);
   const [lat2, setLat2] = useState(positions.lat2);
   const [lon2, setLon2] = useState(positions.lon2);
+
+  const [isHeightFilter, setIsHeightFilter] = useState(false);
+  const [minHeight, setMinHeight] = useState(0);
 
   const [isFetching, setIsFetching] = useState(false);
   const [flightsData, setFlightsData] = useState("");
@@ -54,8 +57,10 @@ function MapInput() {
     setFlights([]);
 
     try {
+      const heightQuery = isHeightFilter ? `&minHeight=${minHeight}` : "";
+
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/v1/aero/flights/search/positions?lat1=${lat1}&lon1=${lon1}&lat2=${lat2}&lon2=${lon2}`,
+        `${process.env.REACT_APP_BACKEND_URL}/v1/aero/flights/search/positions?lat1=${lat1}&lon1=${lon1}&lat2=${lat2}&lon2=${lon2}${heightQuery}`,
         {
           method: "GET",
           headers: {
@@ -177,6 +182,47 @@ function MapInput() {
               <PositionInput label="Lat:" value={lat2} setValue={setLat2} />
               <PositionInput label="Lon:" value={lon2} setValue={setLon2} />
             </div>
+          </div>
+          <div className="mt-3">
+            <div className="flex justify-between items-center">
+              <div className="flex justify-start items-center gap-2 ">
+                <AirplaneInFlight className="h-6 w-5 text-custom4 " />
+                <p className="text font-[600]">
+                  Max Height
+                  <span className="text-xs text-white font-normal">
+                    {" "}
+                    (Optional)
+                  </span>
+                </p>
+              </div>
+              <Checkbox
+                checked={isHeightFilter}
+                onChange={setIsHeightFilter}
+                className="group block size-4 rounded border bg-custom1  cursor-pointer "
+              >
+                <svg
+                  className="stroke-white opacity-0 group-data-[checked]:opacity-100"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                >
+                  <path
+                    d="M3 8L6 11L11 3.5"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </Checkbox>
+            </div>
+            {isHeightFilter && (
+              <div className="pl-3 flex flex-col gap-1 mt-2">
+                <PositionInput
+                  label="Height:"
+                  value={minHeight}
+                  setValue={setMinHeight}
+                />
+              </div>
+            )}
           </div>
         </Field>
 
