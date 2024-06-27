@@ -16,7 +16,7 @@ function PositionInput({ label, value, setValue }) {
         )}
         type="number"
         value={value}
-        onChange={(e) => setValue(Number(e.target.value))}
+        onChange={(e) => setValue(e.target.value)}
       />
     </Field>
   );
