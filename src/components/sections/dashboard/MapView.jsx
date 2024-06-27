@@ -249,7 +249,7 @@ function MapView() {
                               strokeColor:
                                 selectedFlight &&
                                 selectedFlight.ident === flight.ident
-                                  ? "#0000FF"
+                                  ? "yellow"
                                   : intersectionPoints[0].nearestPoint
                                       .altitude_change === "D"
                                   ? "#FF00CC"
