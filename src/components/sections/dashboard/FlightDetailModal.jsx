@@ -33,7 +33,7 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
           <Gps size={20} />
           <p>{title}</p>
         </div>
-        <div className="grid grid-cols-1 text-white bg-custom3 px-3 py-1 text-sm">
+        <div className="grid grid-cols-1 text-white bg-custom1 px-3 py-1 text-sm">
           <div className="flex justify-between gap-10">
             <p>Latitude</p>
             <p className="font-[500]">{latitude}</p>
@@ -67,7 +67,7 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
 
   return (
     <div>
-      <div className="fixed text-sm top-6 right-6 w-[360px] z-20 shadow-lg border border-custom3  bg-white">
+      <div className="fixed text-sm top-6 right-6 w-[330px] z-20 shadow-lg border border-custom3  bg-white">
         <div className="bg-custom1 flex justify-between items-center py-2 px-4">
           <div>
             <p className="text-[#F8C023] font-medium text-base">
@@ -84,21 +84,21 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
         </div>
         <div className="flex justify-between items-center bg-[#EDEDED]">
           <div className="w-full text-center py-3">
-            <p className="text-2xl font-bold">{flight?.origin?.code}</p>
-            <p className="text-base font-medium">{flight?.origin?.city}</p>
+            <p className="text-lg font-bold">{flight?.origin?.code}</p>
+            <p className="text-sm font-medium">{flight?.origin?.city}</p>
           </div>
           <div>
-            <div className="w-14 h-14 flex justify-center items-center bg-white rounded-full overflow-hidden ">
+            <div className="w-12 h-12 flex justify-center items-center bg-white rounded-full overflow-hidden ">
               <AirplaneTakeoff
-                size={32}
+                size={26}
                 weight="fill"
                 className="text-[#F8C023]"
               />
             </div>
           </div>
           <div className="w-full text-center py-3">
-            <p className="text-2xl font-bold">{flight?.destination?.code}</p>
-            <p className="text-base font-medium">{flight?.destination?.city}</p>
+            <p className="text-lg font-bold">{flight?.destination?.code}</p>
+            <p className="text-sm font-medium">{flight?.destination?.city}</p>
           </div>
         </div>
         <div>
