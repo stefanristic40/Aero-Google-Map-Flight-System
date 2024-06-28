@@ -213,8 +213,6 @@ function MapView() {
                         flight.positions
                       );
 
-                      console.log("intersectionPoints", intersectionPoints);
-
                       return (
                         <div key={index}>
                           <OverlayView
@@ -250,8 +248,8 @@ function MapView() {
                                 selectedFlight &&
                                 selectedFlight.ident === flight.ident
                                   ? "yellow"
-                                  : intersectionPoints[0].nearestPoint
-                                      .altitude_change === "D"
+                                  : intersectionPoints[0]?.nearestPoint
+                                      ?.altitude_change === "D"
                                   ? "#FF00CC"
                                   : "#00FFFF",
                               strokeWeight:

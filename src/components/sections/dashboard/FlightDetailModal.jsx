@@ -95,17 +95,17 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
           />
           <PointSection
             title="Entrance Point"
-            latitude={intersectionPoints[0].intersection.latitude}
-            longitude={intersectionPoints[0].intersection.longitude}
-            altitude={intersectionPoints[0].intersection.altitude}
-            groundspeed={intersectionPoints[0].intersection.groundspeed}
+            latitude={intersectionPoints[0]?.intersection.latitude}
+            longitude={intersectionPoints[0]?.intersection.longitude}
+            altitude={intersectionPoints[0]?.intersection.altitude}
+            groundspeed={intersectionPoints[0]?.intersection.groundspeed}
           />
           <PointSection
             title="Exit Point"
-            latitude={intersectionPoints[1].intersection.latitude}
-            longitude={intersectionPoints[1].intersection.longitude}
-            altitude={intersectionPoints[1].intersection.altitude}
-            groundspeed={intersectionPoints[1].intersection.groundspeed}
+            latitude={intersectionPoints[1]?.intersection.latitude}
+            longitude={intersectionPoints[1]?.intersection.longitude}
+            altitude={intersectionPoints[1]?.intersection.altitude}
+            groundspeed={intersectionPoints[1]?.intersection.groundspeed}
           />
         </div>
       </div>
