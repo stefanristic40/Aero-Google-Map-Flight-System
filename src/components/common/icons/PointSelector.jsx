@@ -32,7 +32,7 @@ function PointSelector({ setPoint, pointLabel }) {
   return (
     <button className="" onClick={handlePointSelection}>
       <Gps
-        size={20}
+        size={18}
         weight="bold"
         className={`${
           isSelectingPoint && selectingPointLabel === pointLabel

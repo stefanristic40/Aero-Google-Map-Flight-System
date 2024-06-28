@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useMapStore from "../../../hooks/useMapStore";
-import {
-  Airplane,
-  ArrowRight,
-  CaretDown,
-  CaretUp,
-} from "@phosphor-icons/react";
+import { Airplane, CaretDown, CaretUp } from "@phosphor-icons/react";
 import CountUp from "react-countup";
 
 function FlightList() {
@@ -24,8 +19,8 @@ function FlightList() {
   }, [flights]);
 
   return (
-    <div className="w-full bg-custom1 rounded-lg overflow-hidden shadow-lg">
-      <div className="flex bg-custom2 text-white justify-between items-center p-3">
+    <div className="w-full text-sm bg-custom1 rounded-lg overflow-hidden shadow-lg">
+      <div className="flex bg-custom2 text-white justify-between items-center p-2">
         <p className="font-bold p-0 m-0">
           Flights{" "}
           <span className="text-xs font-normal ">
@@ -40,20 +35,20 @@ function FlightList() {
         </p>
         <button className="p-0 m-0" onClick={() => setIsShow(!isShow)}>
           {isShow ? (
-            <CaretDown size={22} weight="thin" />
+            <CaretDown size={16} weight="thin" />
           ) : (
-            <CaretUp size={22} weight="thin" />
+            <CaretUp size={16} weight="thin" />
           )}
         </button>
       </div>
       <div className={` ${isShow ? "block pb-2 " : "hidden"}`}>
         <div
-          className={`pl-3 pr-2 py-2 h-full max-h-[330px] overflow-auto custom-scrollbar flex flex-col gap-2 `}
+          className={`pl-2 pr-1 py-2  max-h-[370px] overflow-auto custom-scrollbar flex flex-col gap-1.5 `}
         >
           {flights.map((flight, index) => (
             <div
               key={index}
-              className={` flex justify-between items-center  px-2 py-2 cursor-pointer transition-all ease-in-out
+              className={` flex justify-between items-center  pl-1 pr-2 py-1 cursor-pointer transition-all ease-in-out
               ${
                 selectedFlight?.ident === flight.ident
                   ? "bg-custom3 text-custom4"
@@ -62,7 +57,7 @@ function FlightList() {
             `}
               onClick={() => setSelectedFlight(flight)}
             >
-              <div className="flex justify-start items-center w-full gap-4">
+              <div className="flex justify-start items-center w-full gap-3">
                 <Airplane
                   className={`h-6 w-6 ml-2 ${
                     selectedFlight?.ident === flight.ident

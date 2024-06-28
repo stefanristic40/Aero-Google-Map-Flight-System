@@ -51,10 +51,10 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
 
   return (
     <div>
-      <div className="fixed top-6 right-6 w-[360px] z-20 shadow-lg border border-custom3  bg-white">
+      <div className="fixed text-sm top-6 right-6 w-[360px] z-20 shadow-lg border border-custom3  bg-white">
         <div className="bg-custom1 flex justify-between items-center py-2 px-4">
           <div>
-            <p className="text-[#F8C023] font-medium text-lg">
+            <p className="text-[#F8C023] font-medium text-base">
               {flight?.ident}{" "}
             </p>
             <p className="text-white text-sm">{flight?.aircraft_type}</p>
@@ -67,7 +67,7 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
           </button>
         </div>
         <div className="flex justify-between items-center bg-[#EDEDED]">
-          <div className="w-full text-center py-4">
+          <div className="w-full text-center py-3">
             <p className="text-2xl font-bold">{flight?.origin?.code}</p>
             <p className="text-base font-medium">{flight?.origin?.city}</p>
           </div>
@@ -80,7 +80,7 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
               />
             </div>
           </div>
-          <div className="w-full text-center py-4">
+          <div className="w-full text-center py-3">
             <p className="text-2xl font-bold">{flight?.destination?.code}</p>
             <p className="text-base font-medium">{flight?.destination?.city}</p>
           </div>

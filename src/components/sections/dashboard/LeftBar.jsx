@@ -5,7 +5,7 @@ import MapViewToogleTabs from "./MapViewToogleTabs";
 
 function LeftBar() {
   return (
-    <div className="absolute w-[350px] z-20 top-0 left-0 p-3 flex flex-col gap-4 ">
+    <div className="absolute w-[320px] h-screen z-20 top-0 left-0 p-3 flex flex-col gap-3 ">
       <MapViewToogleTabs />
       <MapInput />
       <FlightList />
