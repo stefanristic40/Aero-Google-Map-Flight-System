@@ -2,7 +2,12 @@ import React from "react";
 
 import { AirplaneTakeoff, Gps } from "@phosphor-icons/react";
 import useMapStore from "../../../hooks/useMapStore";
-import { findIntersectionPoints } from "../../../utils";
+import {
+  findIntersectionPoints,
+  formatDate,
+  formatDateHM,
+  formatDateHMS,
+} from "../../../utils";
 
 function FlightDetailModal({ isOpen, setIsOpen, flight }) {
   const positions = useMapStore((state) => state.positions);
@@ -12,12 +17,15 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
     flight.positions
   );
 
+  console.log(intersectionPoints);
+
   const PointSection = ({
     title,
     latitude,
     longitude,
     altitude,
     groundspeed,
+    timestamp,
   }) => {
     return (
       <div className="">
@@ -42,6 +50,14 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
             <p>Groundspeed</p>
             <p className="font-[500]">{groundspeed} mph</p>
           </div>
+          {timestamp && (
+            <div className="flex justify-between gap-10">
+              <p>Time</p>
+              <p className="font-[500]">
+                {formatDate(timestamp)}, {formatDateHMS(timestamp)}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -99,6 +115,7 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
             longitude={intersectionPoints[0]?.intersection.longitude}
             altitude={intersectionPoints[0]?.intersection.altitude}
             groundspeed={intersectionPoints[0]?.intersection.groundspeed}
+            timestamp={intersectionPoints[0]?.intersection.timestamp}
           />
           <PointSection
             title="Exit Point"
@@ -106,6 +123,7 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
             longitude={intersectionPoints[1]?.intersection.longitude}
             altitude={intersectionPoints[1]?.intersection.altitude}
             groundspeed={intersectionPoints[1]?.intersection.groundspeed}
+            timestamp={intersectionPoints[1]?.intersection.timestamp}
           />
         </div>
       </div>

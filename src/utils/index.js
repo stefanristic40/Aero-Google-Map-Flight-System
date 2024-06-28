@@ -7,6 +7,26 @@ export const formatDateHM = (date) => {
   return newDate.toLocaleTimeString("en-US", options);
 };
 
+export const formatDateHMS = (date) => {
+  const newDate = new Date(date);
+  const options = {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+  return newDate.toLocaleTimeString("en-US", options);
+};
+
+export const formatDate = (date) => {
+  const newDate = new Date(date);
+  const options = {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  };
+  return newDate.toLocaleDateString("en-US", options);
+};
+
 export function findIntersectionPoints(rect, flightPath) {
   const { lat1, lon1, lat2, lon2 } = rect;
   const rectLines = [

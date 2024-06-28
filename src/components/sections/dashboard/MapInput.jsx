@@ -28,14 +28,12 @@ function MapInput() {
   const [isHeightFilter, setIsHeightFilter] = useState(false);
   const [maxHeight, setMaxHeight] = useState(0);
 
+  const [isDurationFilter, setIsDurationFilter] = useState(false);
   const timezoneOffset = new Date().getTimezoneOffset() * 60000;
-  const [isDurationFilter, setIsDurationFilter] = useState(true);
-  // Adjust endDuration to local time
   const [endDuration, setEndDuration] = useState(
     new Date(new Date() - timezoneOffset).toISOString().slice(0, 16)
   );
 
-  // Adjust startDuration to 1 day before current local time, considering local timezone
   const [startDuration, setStartDuration] = useState(
     new Date(new Date(Date.now() - 86400000 - timezoneOffset))
       .toISOString()
@@ -296,20 +294,24 @@ function MapInput() {
           </div>
         </Field>
 
-        {isFetching && (
-          <div>
-            <p className="text-sm text-center">
-              Scanning for flights: Time-span # {searchStatus.index || 1} of 96
-              <br />
-              {searchStatus.start_date && searchStatus.end_date && (
-                <p>
-                  (from {formatDateHM(searchStatus.start_date)} to{" "}
-                  {formatDateHM(searchStatus.end_date)})
-                </p>
-              )}
-            </p>
-          </div>
-        )}
+        {isFetching &&
+          (searchStatus && searchStatus.total && searchStatus.index ? (
+            <div>
+              <p className="text-sm text-center">
+                Scanning for flights: Time-span # {searchStatus.index || 1} of{" "}
+                {searchStatus.total}
+                <br />
+                {searchStatus.start_date && searchStatus.end_date && (
+                  <p>
+                    (from {formatDateHM(searchStatus.start_date)} to{" "}
+                    {formatDateHM(searchStatus.end_date)})
+                  </p>
+                )}
+              </p>
+            </div>
+          ) : (
+            <p className="text-sm text-center">Scanning for flights...</p>
+          ))}
 
         <Button
           className="w-full rounded text-sm flex justify-center items-center gap-2 bg-sky-600 py-2 px-4 font-medium text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700"
