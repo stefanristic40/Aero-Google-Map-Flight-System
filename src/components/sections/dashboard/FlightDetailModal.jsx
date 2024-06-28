@@ -5,7 +5,6 @@ import useMapStore from "../../../hooks/useMapStore";
 import {
   findIntersectionPoints,
   formatDate,
-  formatDateHM,
   formatDateHMS,
 } from "../../../utils";
 
