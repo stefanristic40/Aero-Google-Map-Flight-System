@@ -54,7 +54,9 @@ function PositionInput({
         />
       </Field>
       {error && (
-        <di className="text-xs text-red-500 text-right font-normal">{error}</di>
+        <div className="text-xs text-red-500 text-right font-normal">
+          {error}
+        </div>
       )}
     </>
   );

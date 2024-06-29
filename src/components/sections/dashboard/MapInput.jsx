@@ -102,6 +102,7 @@ function MapInput() {
       while (loopRunner) {
         // Here we start reading the stream, until its done.
         const { value, done } = await reader.read();
+
         if (done) {
           setIsFetching(false);
           break;
@@ -320,8 +321,11 @@ function MapInput() {
           ))}
 
         <Button
-          className="w-full rounded text-sm flex justify-center items-center gap-2 bg-sky-600 py-2 px-4 font-medium text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700"
+          className={` ${
+            isFetching ? "cursor-not-allowed" : "cursor-pointer"
+          } w-full rounded text-sm flex justify-center items-center gap-2 bg-sky-600 py-2 px-4 font-medium text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700`}
           onClick={handleSearchFlights}
+          disabled={isFetching}
         >
           <MagnifyingGlass className="h-4 w-4" weight="bold" />
           {isFetching ? "Fetching Flights..." : "Show Flights"}

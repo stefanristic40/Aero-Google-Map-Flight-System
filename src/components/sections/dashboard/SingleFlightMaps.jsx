@@ -8,7 +8,7 @@ function SingleFlightMaps({ zoom, center }) {
   return (
     <div className="h-screen w-full overflow-auto">
       {flights && flights.length > 0 && (
-        <div className=" custom-scrollbar  border-layoutBorder overflow-auto ">
+        <div className=" custom-scrollbar  border-layoutBorder overflow-x-hidden overflow-y-auto w-full ">
           <div className="grid grid-cols-5 ">
             {flights.map((flight, index) => (
               <SingleFlightMapView
