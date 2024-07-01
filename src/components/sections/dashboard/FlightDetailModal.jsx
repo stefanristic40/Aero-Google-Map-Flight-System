@@ -3,7 +3,7 @@ import React from "react";
 import { AirplaneTakeoff, Gps } from "@phosphor-icons/react";
 import useMapStore from "../../../hooks/useMapStore";
 import {
-  findIntersectionPoints,
+  findIntersectionPointsWithRect,
   formatDate,
   formatDateHMS,
 } from "../../../utils";
@@ -11,7 +11,7 @@ import {
 function FlightDetailModal({ isOpen, setIsOpen, flight }) {
   const positions = useMapStore((state) => state.positions);
 
-  const intersectionPoints = findIntersectionPoints(
+  const intersectionPoints = findIntersectionPointsWithRect(
     positions,
     flight.positions
   );
@@ -43,7 +43,9 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
           </div>
           <div className="flex justify-between gap-10">
             <p>Altitude</p>
-            <p className="font-[500]">{altitude}</p>
+            <p className="font-[500]">
+              {altitude > 0 ? (altitude * 100).toFixed(0) : 0} m
+            </p>
           </div>
           <div className="flex justify-between gap-10">
             <p>Groundspeed</p>

@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import useMapStore from "../../../hooks/useMapStore";
-import { Airplane, CaretDown, CaretUp } from "@phosphor-icons/react";
+import {
+  Airplane,
+  AirplaneInFlight,
+  CaretDown,
+  CaretUp,
+  Speedometer,
+} from "@phosphor-icons/react";
 import CountUp from "react-countup";
 
 function FlightList() {
@@ -48,7 +54,7 @@ function FlightList() {
           {flights.map((flight, index) => (
             <div
               key={index}
-              className={` flex justify-between items-center  pl-1 pr-2 py-1 cursor-pointer transition-all ease-in-out
+              className={`w-full flex justify-between items-center pl-1 pr-2 py-1 cursor-pointer transition-all ease-in-out
               ${
                 selectedFlight?.ident === flight.ident
                   ? "bg-custom3 text-custom4"
@@ -74,31 +80,29 @@ function FlightList() {
                       {flight?.aircraft_type}
                     </p>
                   </div>
-                  <div className="r gap-1">
-                    <span className="text-sm text-nowrap p-0 m-0">
-                      {flight?.origin?.city}
-                    </span>{" "}
-                    -{" "}
-                    <span className="text-xs text-nowrap p-0 m-0">
-                      {flight?.destination?.city}
+                  <div className="">
+                    <span className="text-sm  p-0 m-0">
+                      {flight?.origin?.city} - {flight?.destination?.city}
                     </span>
                   </div>
+                  <div className="flex items-center gap-4 mt-1  text-xs font-[400] ">
+                    <p className="flex items-center gap-1">
+                      <Speedometer className="h-4 w-4" />
+                      <span className="text-xs font-[600]">
+                        {flight?.last_position?.groundspeed} mph
+                      </span>
+                    </p>
+                    <p className="flex items-center gap-1">
+                      <AirplaneInFlight className="h-4 w-4 " />
+                      <span className="text-xs font-[600]">
+                        {(flight?.last_position?.altitude > 0
+                          ? flight?.last_position?.altitude
+                          : 0) * 100}{" "}
+                        m
+                      </span>
+                    </p>
+                  </div>
                 </div>
-              </div>
-
-              <div>
-                <p className="text-xs font-[400] text-nowrap text-right ">
-                  Speed:{" "}
-                  <span className="text-xs font-[600]">
-                    {flight?.last_position?.groundspeed} mph
-                  </span>
-                </p>
-                <p className="text-xs font-[400] text-nowrap text-right ">
-                  Height:{" "}
-                  <span className="text-xs font-[600]">
-                    {flight?.last_position?.altitude}
-                  </span>
-                </p>
               </div>
             </div>
           ))}

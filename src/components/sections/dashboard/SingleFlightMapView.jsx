@@ -7,37 +7,21 @@ import {
 } from "@react-google-maps/api";
 import useMapStore from "../../../hooks/useMapStore";
 import Airplane from "../../common/icons/Airplane";
-import { findIntersectionPoints } from "../../../utils";
+import {
+  findIntersectionPointsWithRect,
+  positionsToPolyline,
+} from "../../../utils";
 
 function SingleFlightMapView({ flight, zoom, center }) {
   const selectedFlight = useMapStore((state) => state.selectedFlight);
   const positions = useMapStore((state) => state.positions);
   const setSelectedFlight = useMapStore((state) => state.setSelectedFlight);
 
-  function positionsToPolyline(positions, last_position = null) {
-    let polyline = [];
-    if (positions) {
-      positions.forEach((position) => {
-        polyline.push({
-          lat: position.latitude,
-          lng: position.longitude,
-        });
-      });
-    }
-    if (last_position) {
-      polyline.push({
-        lat: last_position.latitude,
-        lng: last_position.longitude,
-      });
-    }
-    return polyline;
-  }
-
   const handleSelectFlight = async (flight) => {
     setSelectedFlight(flight);
   };
 
-  const intersectionPoints = findIntersectionPoints(
+  const intersectionPoints = findIntersectionPointsWithRect(
     positions,
     flight.positions
   );

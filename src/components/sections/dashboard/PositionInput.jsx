@@ -35,7 +35,7 @@ function PositionInput({
   return (
     <>
       <Field className={"w-full flex justify-between items-center gap-2"}>
-        <Label className="text-sm w-14 font-medium text-white text-nowrap ">
+        <Label className="text-sm w-14 text-right font-medium text-white text-nowrap ">
           {label}
         </Label>
 
@@ -47,9 +47,7 @@ function PositionInput({
           type={type}
           value={value}
           onChange={
-            type === "datetime-local"
-              ? handleDateChange
-              : (e) => setValue(e.target.value)
+            type === "datetime-local" ? handleDateChange : (e) => setValue(e)
           }
         />
       </Field>

@@ -27,7 +27,7 @@ export const formatDate = (date) => {
   return newDate.toLocaleDateString("en-US", options);
 };
 
-export function findIntersectionPoints(rect, flightPath) {
+export function findIntersectionPointsWithRect(rect, flightPath) {
   const { lat1, lon1, lat2, lon2 } = rect;
   const rectLines = [
     { start: { lat: lat1, lon: lon1 }, end: { lat: lat1, lon: lon2 } }, // Top edge
@@ -148,6 +148,117 @@ export function findIntersectionPoints(rect, flightPath) {
   return results;
 }
 
+export function findIntersectionPointsWithCircle(center, radius, flightPath) {
+  function lineIntersectCircle(center, radius, line) {
+    const { start: p1, end: p2 } = line;
+    const { lat: cx, lon: cy } = center;
+    const r = radius;
+
+    const dx = p2.lon - p1.lon;
+    const dy = p2.lat - p1.lat;
+    const fx = p1.lon - cx;
+    const fy = p1.lat - cy;
+
+    const a = dx * dx + dy * dy;
+    const b = 2 * (dx * fx + dy * fy);
+    const c = fx * fx + fy * fy - r * r;
+
+    const discriminant = b * b - 4 * a * c;
+    if (discriminant < 0) return null;
+
+    const t1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+    const t2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+
+    if (t1 >= 0 && t1 <= 1) {
+      return {
+        lat: p1.lat + t1 * (p2.lat - p1.lat),
+        lon: p1.lon + t1 * (p2.lon - p1.lon),
+        t: t1,
+      };
+    }
+
+    if (t2 >= 0 && t2 <= 1) {
+      return {
+        lat: p1.lat + t2 * (p2.lat - p1.lat),
+        lon: p1.lon + t2 * (p2.lon - p1.lon),
+        t: t2,
+      };
+    }
+
+    return null;
+  }
+
+  function interpolate(value1, value2, t) {
+    return value1 + t * (value2 - value1);
+  }
+
+  function interpolateTimestamp(timestamp1, timestamp2, t) {
+    const time1 = new Date(timestamp1).getTime();
+    const time2 = new Date(timestamp2).getTime();
+    return new Date(interpolate(time1, time2, t)).toISOString();
+  }
+
+  const results = [];
+  for (let i = 0; i < flightPath.length - 1; i++) {
+    const flightSegment = {
+      start: flightPath[i],
+      end: flightPath[i + 1],
+    };
+
+    const intersection = lineIntersectCircle(center, radius, flightSegment);
+    if (intersection) {
+      const nearestPoint =
+        distance(intersection, {
+          lat: flightSegment.start.latitude,
+          lon: flightSegment.start.longitude,
+        }) <
+        distance(intersection, {
+          lat: flightSegment.end.latitude,
+          lon: flightSegment.end.longitude,
+        })
+          ? flightSegment.start
+          : flightSegment.end;
+
+      const interpolatedPoint = {
+        latitude: intersection.lat,
+        longitude: intersection.lon,
+        altitude: interpolate(
+          flightSegment.start.altitude,
+          flightSegment.end.altitude,
+          intersection.t
+        ),
+        altitude_change: flightSegment.start.altitude_change, // Assuming constant
+        fa_flight_id: flightSegment.start.fa_flight_id, // Assuming constant
+        groundspeed: interpolate(
+          flightSegment.start.groundspeed,
+          flightSegment.end.groundspeed,
+          intersection.t
+        ),
+        heading: interpolate(
+          flightSegment.start.heading,
+          flightSegment.end.heading,
+          intersection.t
+        ),
+        timestamp: interpolateTimestamp(
+          flightSegment.start.timestamp,
+          flightSegment.end.timestamp,
+          intersection.t
+        ),
+        update_type: flightSegment.start.update_type, // Assuming constant
+      };
+
+      results.push({
+        intersection: interpolatedPoint,
+        segment: [flightSegment.start, flightSegment.end],
+        nearestPoint,
+        index: i,
+      });
+    }
+  }
+
+  return results;
+}
+
 export function distance(point1, point2) {
   const R = 6371e3; // Earth radius in meters
   const φ1 = (point1.lat * Math.PI) / 180;
@@ -161,4 +272,23 @@ export function distance(point1, point2) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return R * c;
+}
+
+export function positionsToPolyline(positions, last_position = null) {
+  let polyline = [];
+  if (positions) {
+    positions.forEach((position) => {
+      polyline.push({
+        lat: position.latitude,
+        lng: position.longitude,
+      });
+    });
+  }
+  if (last_position) {
+    polyline.push({
+      lat: last_position.latitude,
+      lng: last_position.longitude,
+    });
+  }
+  return polyline;
 }

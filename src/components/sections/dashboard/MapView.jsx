@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useMapStore from "../../../hooks/useMapStore";
 import {
+  Circle,
   GoogleMap,
   Marker,
   OverlayView,
@@ -11,7 +12,10 @@ import FlightDetailModal from "./FlightDetailModal";
 import Airplane from "../../common/icons/Airplane";
 import SingleFlightMaps from "./SingleFlightMaps";
 import useDebounce from "../../../hooks/useDebounce";
-import { findIntersectionPoints } from "../../../utils";
+import {
+  findIntersectionPointsWithRect,
+  positionsToPolyline,
+} from "../../../utils";
 
 function MapView() {
   const { isLoaded } = useJsApiLoader({
@@ -27,8 +31,12 @@ function MapView() {
   const selectedFlight = useMapStore((state) => state.selectedFlight);
   const isSelectingPoint = useMapStore((state) => state.isSelectingPoint);
   const setSelectedPoint = useMapStore((state) => state.setSelectedPoint);
+  const radius = useMapStore((state) => state.radius);
+  const centerPosition = useMapStore((state) => state.centerPosition);
+  const setCenterPosition = useMapStore((state) => state.setCenterPosition);
+  const searchMode = useMapStore((state) => state.searchMode);
 
-  const [center, setCenter] = useState({ lat: 28.125, lng: -82.5 });
+  const [center, setCenter] = useState({});
   const [zoom, setZoom] = useState(11);
   const [isFlightDetailModalOpen, setIsFlightDetailModalOpen] = useState(false);
 
@@ -44,25 +52,6 @@ function MapView() {
       setIsFlightDetailModalOpen(true);
     }
   }, [selectedFlight]);
-
-  function positionsToPolyline(positions, last_position = null) {
-    let polyline = [];
-    if (positions) {
-      positions.forEach((position) => {
-        polyline.push({
-          lat: position.latitude,
-          lng: position.longitude,
-        });
-      });
-    }
-    if (last_position) {
-      polyline.push({
-        lat: last_position.latitude,
-        lng: last_position.longitude,
-      });
-    }
-    return polyline;
-  }
 
   const debouncedPositionsTerm = useDebounce(positions, 500); // 500ms debounce delay
 
@@ -165,50 +154,120 @@ function MapView() {
                       handleMapViewClick(e);
                     }}
                   >
-                    {positions.lat1 && positions.lon1 && (
-                      <Marker
-                        position={{
-                          lat: positions.lat1,
-                          lng: positions.lon1,
-                        }}
-                        icon={{
-                          url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-                        }}
-                        draggable={true}
-                        onDrag={(e) => {
-                          console.log(e);
-                          setPositions({
-                            lat1: e.latLng.lat(),
-                            lon1: e.latLng.lng(),
-                            lat2: positions.lat2,
-                            lon2: positions.lon2,
-                          });
-                        }}
-                      />
+                    {searchMode === "circle" && (
+                      <>
+                        <Marker
+                          position={{
+                            lat: centerPosition.lat,
+                            lng: centerPosition.lon,
+                          }}
+                          icon={{
+                            url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png",
+                          }}
+                          draggable={true}
+                          onDrag={(e) => {
+                            setCenterPosition({
+                              lat: e.latLng.lat(),
+                              lon: e.latLng.lng(),
+                            });
+                          }}
+                        />
+
+                        <Circle
+                          center={{
+                            lat: centerPosition.lat,
+                            lng: centerPosition.lon,
+                          }}
+                          radius={radius * 1000}
+                          options={{
+                            strokeColor: "#04FD04",
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: "#04FD04",
+                            fillOpacity: 0.1,
+                          }}
+                        />
+                      </>
                     )}
-                    {positions.lat2 && positions.lon2 && (
-                      <Marker
-                        position={{
-                          lat: positions.lat2,
-                          lng: positions.lon2,
-                        }}
-                        icon={{
-                          url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-                        }}
-                        draggable={true}
-                        onDrag={(e) => {
-                          setPositions({
-                            lat1: positions.lat1,
-                            lon1: positions.lon1,
-                            lat2: e.latLng.lat(),
-                            lon2: e.latLng.lng(),
-                          });
-                        }}
-                      />
+
+                    <Polyline
+                      path={[
+                        {
+                          lat: Number(positions.lat1),
+                          lng: Number(positions.lon1),
+                        },
+                        {
+                          lat: Number(positions.lat1),
+                          lng: Number(positions.lon2),
+                        },
+                        {
+                          lat: Number(positions.lat2),
+                          lng: Number(positions.lon2),
+                        },
+                        {
+                          lat: Number(positions.lat2),
+                          lng: Number(positions.lon1),
+                        },
+                        {
+                          lat: Number(positions.lat1),
+                          lng: Number(positions.lon1),
+                        },
+                      ]}
+                      options={{
+                        strokeColor: "#04FD04",
+                        strokeWeight: 4,
+                        strokeOpacity: 1,
+                      }}
+                    />
+
+                    {searchMode === "square" && (
+                      <>
+                        {positions.lat1 && positions.lon1 && (
+                          <Marker
+                            position={{
+                              lat: Number(positions.lat1),
+                              lng: Number(positions.lon1),
+                            }}
+                            icon={{
+                              url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                            }}
+                            draggable={true}
+                            onDrag={(e) => {
+                              console.log(e);
+                              setPositions({
+                                lat1: e.latLng.lat(),
+                                lon1: e.latLng.lng(),
+                                lat2: positions.lat2,
+                                lon2: positions.lon2,
+                              });
+                            }}
+                          />
+                        )}
+                        {positions.lat2 && positions.lon2 && (
+                          <Marker
+                            position={{
+                              lat: Number(positions.lat2),
+                              lng: Number(positions.lon2),
+                            }}
+                            icon={{
+                              url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                            }}
+                            draggable={true}
+                            onDrag={(e) => {
+                              setPositions({
+                                lat1: positions.lat1,
+                                lon1: positions.lon1,
+                                lat2: e.latLng.lat(),
+                                lon2: e.latLng.lng(),
+                              });
+                            }}
+                          />
+                        )}
+                      </>
                     )}
 
                     {flights?.map((flight, index) => {
-                      const intersectionPoints = findIntersectionPoints(
+                      const intersectionPoints = findIntersectionPointsWithRect(
                         positions,
                         flight.positions
                       );
@@ -276,21 +335,6 @@ function MapView() {
                         </div>
                       );
                     })}
-
-                    <Polyline
-                      path={[
-                        { lat: positions.lat1, lng: positions.lon1 },
-                        { lat: positions.lat1, lng: positions.lon2 },
-                        { lat: positions.lat2, lng: positions.lon2 },
-                        { lat: positions.lat2, lng: positions.lon1 },
-                        { lat: positions.lat1, lng: positions.lon1 },
-                      ]}
-                      options={{
-                        strokeColor: "#04FD04",
-                        strokeWeight: 4,
-                        strokeOpacity: 1,
-                      }}
-                    />
                   </GoogleMap>
                 </div>
               </div>
