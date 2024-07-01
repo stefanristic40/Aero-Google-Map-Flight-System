@@ -90,7 +90,7 @@ function FlightList() {
                     <p className="flex items-center gap-1">
                       <Speedometer className="h-4 w-4" />
                       <span className="text-xs font-[600]">
-                        {flight?.last_position?.groundspeed} mph
+                        {flight?.last_position?.groundspeed.toFixed(0)} mph
                       </span>
                     </p>
                     <p className="flex items-center gap-1">

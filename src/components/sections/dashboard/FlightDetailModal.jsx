@@ -51,7 +51,7 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
           </div>
           <div className="flex justify-between gap-10">
             <p>Groundspeed</p>
-            <p className="font-[500]">{groundspeed} mph</p>
+            <p className="font-[500]">{groundspeed.toFixed(0)} mph</p>
           </div>
           {timestamp && (
             <div className="flex justify-between gap-10">
