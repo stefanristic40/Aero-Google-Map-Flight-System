@@ -441,6 +441,7 @@ function MapInput() {
                     setValue={(e) => {
                       setRadius(e.target.value);
                     }}
+                    unit="km"
                   />
                 </div>
               </div>
