@@ -7,6 +7,7 @@ import {
   formatDate,
   formatDateHMS,
 } from "../../../utils";
+import { ftToMeterRatio } from "../../../constants";
 
 function FlightDetailModal({ isOpen, setIsOpen, flight }) {
   const positions = useMapStore((state) => state.positions);
@@ -44,7 +45,8 @@ function FlightDetailModal({ isOpen, setIsOpen, flight }) {
           <div className="flex justify-between gap-10">
             <p>Altitude</p>
             <p className="font-[500]">
-              {altitude > 0 ? (altitude * 100).toFixed(0) : 0} m
+              {altitude > 0 ? (altitude * ftToMeterRatio * 100).toFixed(0) : 0}{" "}
+              m
             </p>
           </div>
           <div className="flex justify-between gap-10">

@@ -10,6 +10,7 @@ function PositionInput({
   type = "number",
   min = null,
   max = null,
+  unit = null,
 }) {
   const [error, setError] = React.useState(null);
 
@@ -39,17 +40,20 @@ function PositionInput({
           {label}
         </Label>
 
-        <Input
-          className={clsx(
-            "block w-full rounded-lg border border-custom3 py-1 px-2 text-sm text-white bg-custom2 ",
-            "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
-          )}
-          type={type}
-          value={value}
-          onChange={
-            type === "datetime-local" ? handleDateChange : (e) => setValue(e)
-          }
-        />
+        <div className="relative w-full flex gap-1 justify-between rounded-lg border border-custom3 py-1 text-white bg-custom2 ">
+          <Input
+            className={clsx(
+              "block w-full pl-2 text-sm bg-transparent ",
+              "focus:outline-none "
+            )}
+            type={type}
+            value={value}
+            onChange={
+              type === "datetime-local" ? handleDateChange : (e) => setValue(e)
+            }
+          />
+          <div className="pr-1 ">{unit}</div>
+        </div>
       </Field>
       {error && (
         <div className="text-xs text-red-500 text-right font-normal">

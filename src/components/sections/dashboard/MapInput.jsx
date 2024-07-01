@@ -12,6 +12,7 @@ import {
 import { CaretDown, CaretUp } from "@phosphor-icons/react";
 import PointSelector from "../../common/icons/PointSelector";
 import axios from "axios";
+import { ftToMeterRatio } from "../../../constants";
 
 function MapInput() {
   const setFlights = useMapStore((state) => state.setFlights);
@@ -120,7 +121,9 @@ function MapInput() {
     try {
       var tempFlights = [];
 
-      const heightQuery = isHeightFilter ? `&maxHeight=${maxHeight}` : "";
+      const heightQuery = isHeightFilter
+        ? `&maxHeight=${maxHeight / (ftToMeterRatio * 100)}`
+        : "";
 
       const startDate = isDurationFilter
         ? new Date(startDuration)
@@ -479,12 +482,19 @@ function MapInput() {
               </Checkbox>
             </div>
             {isHeightFilter && (
-              <div className="pl-3 flex flex-col gap-1 mt-2">
+              <div className="pl-3 flex items-center gap-1 mt-2">
                 <PositionInput
                   label="Height:"
                   value={maxHeight}
-                  setValue={setMaxHeight}
+                  setValue={(e) => {
+                    setMaxHeight(e.target.value);
+                  }}
+                  unit="m"
                 />
+                =
+                <div className="text-nowrap">
+                  {(maxHeight / ftToMeterRatio).toFixed(0)} ft
+                </div>
               </div>
             )}
           </div>

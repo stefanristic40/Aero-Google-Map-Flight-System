@@ -8,6 +8,7 @@ import {
   Speedometer,
 } from "@phosphor-icons/react";
 import CountUp from "react-countup";
+import { ftToMeterRatio } from "../../../constants";
 
 function FlightList() {
   const [isShow, setIsShow] = useState(true);
@@ -95,9 +96,13 @@ function FlightList() {
                     <p className="flex items-center gap-1">
                       <AirplaneInFlight className="h-4 w-4 " />
                       <span className="text-xs font-[600]">
-                        {(flight?.last_position?.altitude > 0
-                          ? flight?.last_position?.altitude
-                          : 0) * 100}{" "}
+                        {flight?.last_position?.altitude > 0
+                          ? (
+                              flight?.last_position?.altitude *
+                              ftToMeterRatio *
+                              100
+                            ).toFixed(0)
+                          : 0}{" "}
                         m
                       </span>
                     </p>
