@@ -537,9 +537,7 @@ function MapInput() {
                   type="datetime-local"
                   value={startDuration}
                   setValue={setStartDuration}
-                  min={new Date(new Date() - 86400000)
-                    .toISOString()
-                    .slice(0, 16)}
+                  min={new Date(new Date() - 86400000)}
                   max={endDuration}
                 />
                 <PositionInput
